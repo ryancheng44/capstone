@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CameraMovement : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class CameraMovement : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-        Vector3 mousePosition = Input.mousePosition;
+        Vector2 mousePosition = Mouse.current.position.ReadValue();
         Vector3 cameraPosition = mainCamera.position;
 
         if (mousePosition.x < widthMin)

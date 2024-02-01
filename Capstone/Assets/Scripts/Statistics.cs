@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
 
 public class Statistics : MonoBehaviour
 {
@@ -12,6 +11,9 @@ public class Statistics : MonoBehaviour
     [SerializeField] private Transform rightBorder;
 
     [SerializeField] private TextMeshProUGUI populationText;
+    [SerializeField] private TextMeshProUGUI balanceText;
+
+    [SerializeField] private float startingBalance = 1000;
 
     public float xMin { get; private set; }
     public float XMax { get; private set; }
@@ -19,23 +21,33 @@ public class Statistics : MonoBehaviour
     public float yMax { get; private set; }
 
     private int population = 0;
+    private float balance = 0;
 
-    // Start is called before the first frame update
-    void Start()
-    {
+    private void Awake() {
         if (instance == null)
             instance = this;
         else
             Destroy(gameObject);
-
+        
         xMin = leftBorder.position.x;
         XMax = rightBorder.position.x;
         yMin = bottomBorder.position.y;
         yMax = topBorder.position.y;
+
+        SetBalance(startingBalance);
     }
 
-    public void AddPopulation() {
-        population++;
+    public int GetPopulation() => population;
+
+    public void SetPopulation(int value) {
+        population = value;
         populationText.text = "Population: " + population;
+    }
+
+    public float GetBalance() => balance;
+
+    public void SetBalance(float value) {
+        balance = value;
+        balanceText.text = "Balance: " + balance.ToString("C2");
     }
 }
