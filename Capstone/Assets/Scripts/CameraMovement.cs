@@ -3,8 +3,7 @@ using UnityEngine.InputSystem;
 
 public class CameraMovement : MonoBehaviour
 {
-    [SerializeField] private Transform mainCamera;
-    [SerializeField] private float cameraSpeed = 5f;
+    [SerializeField] private float cameraSpeed = 10f;
 
     private float widthMin, widthMax, heightMin, heightMax;
 
@@ -20,7 +19,7 @@ public class CameraMovement : MonoBehaviour
     // Update is called once per frame
     void Update() {
         Vector2 mousePosition = Mouse.current.position.ReadValue();
-        Vector3 cameraPosition = mainCamera.position;
+        Vector3 cameraPosition = transform.position;
 
         if (mousePosition.x < widthMin)
             cameraPosition.x -= cameraSpeed * Time.deltaTime;
@@ -35,6 +34,6 @@ public class CameraMovement : MonoBehaviour
         cameraPosition.x = Mathf.Clamp(cameraPosition.x, Statistics.instance.xMin, Statistics.instance.XMax);
         cameraPosition.y = Mathf.Clamp(cameraPosition.y, Statistics.instance.yMin, Statistics.instance.yMax);
 
-        mainCamera.position = cameraPosition;
+        transform.position = cameraPosition;
     }
 }
