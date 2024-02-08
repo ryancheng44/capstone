@@ -1,24 +1,17 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class CameraMovement : MonoBehaviour
 {
     [SerializeField] private float cameraSpeed = 10f;
 
-    private float widthMin, widthMax, heightMin, heightMax;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        widthMin = Screen.width * 0.1f;
-        widthMax = Screen.width * 0.9f;
-        heightMin = Screen.height * 0.1f;
-        heightMax = Screen.height * 0.9f;
-    }
+    private float widthMin = Screen.width * 0.1f;
+    private float widthMax = Screen.width * 0.9f;
+    private float heightMin = Screen.height * 0.1f;
+    private float heightMax = Screen.height * 0.9f;
 
     // Update is called once per frame
     void Update() {
-        Vector2 mousePosition = Mouse.current.position.ReadValue();
+        Vector2 mousePosition = Input.mousePosition;
         Vector3 cameraPosition = transform.position;
 
         if (mousePosition.x < widthMin)
@@ -31,8 +24,8 @@ public class CameraMovement : MonoBehaviour
         else if (mousePosition.y > heightMax)
             cameraPosition.y += cameraSpeed * Time.deltaTime;
 
-        cameraPosition.x = Mathf.Clamp(cameraPosition.x, Statistics.instance.xMin, Statistics.instance.XMax);
-        cameraPosition.y = Mathf.Clamp(cameraPosition.y, Statistics.instance.yMin, Statistics.instance.yMax);
+        cameraPosition.x = Mathf.Clamp(cameraPosition.x, Boundaries.instance.xMin, Boundaries.instance.xMax);
+        cameraPosition.y = Mathf.Clamp(cameraPosition.y, Boundaries.instance.yMin, Boundaries.instance.yMax);
 
         transform.position = cameraPosition;
     }
