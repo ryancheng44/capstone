@@ -6,22 +6,33 @@ public class House : MonoBehaviour
     private int numAdults = 0;
     private int numChildren = 0;
     
+    // Start is called before the first frame update
     void Start()
     {
+        DateManager.instance.OnNewMonth += PopulationAttraction;
+        DateManager.instance.OnNewMonth += ChanceToHaveChildren;
+
         numAdults = Random.Range(PopulationManager.instance.minNumAdults, PopulationManager.instance.maxNumAdults + 1);
         PopulationManager.instance.SetPopulation(PopulationManager.instance.population + numAdults);
-        TryToHaveChildren();
+        ChanceToHaveChildren();
     }
 
-    private void OnMouseDown() => Debug.Log("House clicked!");
-    
-    private void OnEnable() => DateManager.instance.OnNewMonth += TryToHaveChildren;
-    private void OnDisable() => DateManager.instance.OnNewMonth -= TryToHaveChildren;
+    private void OnMouseDown() => Debug.Log($"This house has {numAdults} adults and {numChildren} children.");
 
-    private void TryToHaveChildren() {
+    private void ChanceToHaveChildren() {
         if (numAdults >= 2 && Random.value <= PopulationManager.instance.chanceToHaveChildren) {
             numChildren++;
             PopulationManager.instance.SetPopulation(PopulationManager.instance.population + 1);
+        }
+    }
+
+    private void PopulationAttraction() {
+        if (numAdults < PopulationManager.instance.maxNumAdults && Random.value <= PopulationManager.instance.populationAttraction) {
+            numAdults++;
+            PopulationManager.instance.SetPopulation(PopulationManager.instance.population + 1);
+
+            if (numAdults >= PopulationManager.instance.maxNumAdults)
+                DateManager.instance.OnNewMonth -= PopulationAttraction;
         }
     }
 }

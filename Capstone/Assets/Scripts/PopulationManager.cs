@@ -7,12 +7,13 @@ public class PopulationManager : MonoBehaviour
 
     [Header("Prefab")]
     [SerializeField] private House housePrefab;
-
+    
     [Header("Initial Values")]
     [SerializeField] private int startMinNumHouses = 8;
     [SerializeField] private int startMaxNumHouses = 12;
     [field: SerializeField] public int minNumAdults { get; private set; } = 1;
     [field: SerializeField] public int maxNumAdults { get; private set; } = 2;
+    [field: SerializeField] public float populationAttraction { get; private set; } = 0.1f;
     public float chanceToHaveChildren { get; private set; } = 0f;
 
     [Header("Misceallaneous")]
@@ -36,6 +37,11 @@ public class PopulationManager : MonoBehaviour
             SpawnHouse();
     }
 
+    public void SetPopulation(int value) {
+        population = value;
+        populationText.text = "Population: " + population;
+    }
+
     private void SpawnHouse() {
         Vector2 randomPosition = Vector2.zero;
 
@@ -52,10 +58,5 @@ public class PopulationManager : MonoBehaviour
         }
 
         print("Couldn't spawn house after " + maxAttemptsToSpawnHouse + " attempts.");
-    }
-    
-    public void SetPopulation(int value) {
-        population = value;
-        populationText.text = "Population: " + population;
     }
 }

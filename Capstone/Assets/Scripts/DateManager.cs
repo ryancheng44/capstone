@@ -11,15 +11,14 @@ public class DateManager : MonoBehaviour
     [SerializeField] private int startYear = 2024;
     [SerializeField] private int startMonth = 1;
     [SerializeField] private int startDay = 1;
+    private DateTime date;
 
     [Header("Miscellaneous")]
-    [SerializeField] private float timeBetweenDays = 5f;
+    [SerializeField] private float timeBetweenDays = 1f;
+    private float timeSinceLastDay = 0f;
 
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI dateText;
-
-    private DateTime date;
-    private float timeSinceLastDay = 0f;
 
     private void Awake()
     {
