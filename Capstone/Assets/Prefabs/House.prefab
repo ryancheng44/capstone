@@ -146,3 +146,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9ce87c41f28a4aaa81fa0c339699936, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  taxableColor: {r: 0, g: 1, b: 0, a: 1}
+  notTaxableColor: {r: 1, g: 0, b: 0, a: 1}
+  numAdults: 0
+  numChildren: 0
+  isMarried: 0

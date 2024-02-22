@@ -1,11 +1,13 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Camera))]
 public class CameraMovement : MonoBehaviour
 {
     [SerializeField] private float cameraSpeed = 10f;
 
     // Update is called once per frame
-    void Update() {
+    void Update()
+    {
         Vector3 cameraPosition = transform.position;
 
         float horizontalMovement = Input.GetAxisRaw("Horizontal");

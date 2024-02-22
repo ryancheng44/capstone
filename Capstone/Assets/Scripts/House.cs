@@ -1,38 +1,45 @@
+using System;
 using UnityEngine;
 
-[RequireComponent(typeof(Collider2D))]
+[RequireComponent(typeof(SpriteRenderer))]
 public class House : MonoBehaviour
 {
-    private int numAdults = 0;
-    private int numChildren = 0;
+    [SerializeField] private Color taxableColor;
+    [SerializeField] private Color notTaxableColor;
+    
+    [HideInInspector] public int numAdults = 0;
+    [HideInInspector] public int numChildren = 0;
+    [HideInInspector] public bool isMarried = false;
+
+    public DateTime nextTaxDate { get; private set; }
+    private SpriteRenderer spriteRenderer;
+    private bool isTaxable = true;
     
     // Start is called before the first frame update
     void Start()
     {
-        DateManager.instance.OnNewMonth += PopulationAttraction;
-        DateManager.instance.OnNewMonth += ChanceToHaveChildren;
-
-        numAdults = Random.Range(PopulationManager.instance.minNumAdults, PopulationManager.instance.maxNumAdults + 1);
-        PopulationManager.instance.SetPopulation(PopulationManager.instance.population + numAdults);
-        ChanceToHaveChildren();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.color = notTaxableColor;
+        nextTaxDate = DateManager.instance.date.AddMonths(1);
     }
 
-    private void OnMouseDown() => Debug.Log($"This house has {numAdults} adults and {numChildren} children.");
-
-    private void ChanceToHaveChildren() {
-        if (numAdults >= 2 && Random.value <= PopulationManager.instance.chanceToHaveChildren) {
-            numChildren++;
-            PopulationManager.instance.SetPopulation(PopulationManager.instance.population + 1);
-        }
+    public void MakeTaxable()
+    {
+        spriteRenderer.color = taxableColor;
+        isTaxable = true;
     }
 
-    private void PopulationAttraction() {
-        if (numAdults < PopulationManager.instance.maxNumAdults && Random.value <= PopulationManager.instance.populationAttraction) {
-            numAdults++;
-            PopulationManager.instance.SetPopulation(PopulationManager.instance.population + 1);
+    private void OnMouseDown()
+    {
+        Debug.Log($"This house is home to {numAdults} adults and {numChildren} children.");
 
-            if (numAdults >= PopulationManager.instance.maxNumAdults)
-                DateManager.instance.OnNewMonth -= PopulationAttraction;
-        }
+        if (!isTaxable)
+            return;
+
+        BalanceManager.instance.EditBalanceBy(numAdults * 100f + numChildren * 50f);
+        nextTaxDate = DateManager.instance.date.AddMonths(1);
+        
+        spriteRenderer.color = notTaxableColor;
+        isTaxable = false;
     }
 }

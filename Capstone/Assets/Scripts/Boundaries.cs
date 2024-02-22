@@ -2,13 +2,12 @@ using UnityEngine;
 
 public class Boundaries : MonoBehaviour
 {
-    public static Boundaries instance { get; private set; }
-
-    [Header("Boundaries")]
     [SerializeField] private Transform topBoundary;
     [SerializeField] private Transform bottomBoundary;
     [SerializeField] private Transform leftBoundary;
     [SerializeField] private Transform rightBoundary;
+
+    public static Boundaries instance { get; private set; }
 
     public float xMin { get; private set; }
     public float xMax { get; private set; }

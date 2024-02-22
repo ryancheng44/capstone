@@ -3,12 +3,27 @@ using TMPro;
 
 public class BalanceManager : MonoBehaviour
 {
-    [Header("Initial Value")]
+    [Header("Initial Values")]
     [SerializeField] private float balance = 1000f;
 
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI balanceText;
 
-    // Start is called before the first frame update
-    void Start() => balanceText.text = "Balance: " + balance.ToString("C2");
+    public static BalanceManager instance { get; private set; }
+
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
+
+        EditBalanceBy(0f);
+    }
+
+    public void EditBalanceBy(float amount)
+    {
+        balance += amount;
+        balanceText.text = "Balance: " + balance.ToString("C2");
+    }
 }
