@@ -8,7 +8,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Germs
   - Water
   - UI
   - 
@@ -40,4 +40,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Path
+    uniqueID: 3780241521
+    locked: 0
+  - name: Germs
+    uniqueID: 3867824253
+    locked: 0
+  - name: Towers
+    uniqueID: 2507896737
     locked: 0
