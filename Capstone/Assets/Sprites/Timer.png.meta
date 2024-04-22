@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9d2f315aab06a4a7cbf0061dedd0d2b6
+guid: 023133cabf1dd4582a773623f1576b00
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Neutrophil
+      name: Timer
       rect:
         serializedVersion: 2
-        x: 238
-        y: 233
-        width: 1572
-        height: 1582
+        x: 168
+        y: 39
+        width: 1702
+        height: 1977
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -111,8 +111,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2c7984cec39754c0281b32771d1a286d
-      internalID: -263130387
+      spriteID: b153daefd912642c7aee78882a72f516
+      internalID: 1861251323
       vertices: []
       indices: 
       edges: []
@@ -128,7 +128,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Neutrophil: -263130387
+      Timer: 1861251323
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

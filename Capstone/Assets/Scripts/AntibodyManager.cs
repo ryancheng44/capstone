@@ -9,6 +9,7 @@ public class AntibodyManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI antibodyText;
     [SerializeField] private int startingAntibodies = 1000;
+
     private int currentAntibodies = 0;
     private int maxAntibodies = 0;
 

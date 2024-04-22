@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9d2f315aab06a4a7cbf0061dedd0d2b6
+guid: 58f36c78f5a4e4c90985759ce02fa7af
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Neutrophil
+      name: Addition
       rect:
         serializedVersion: 2
-        x: 238
-        y: 233
-        width: 1572
-        height: 1582
+        x: 42
+        y: 1119
+        width: 733
+        height: 732
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -111,8 +111,71 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2c7984cec39754c0281b32771d1a286d
-      internalID: -263130387
+      spriteID: aec8fd8a02c0e474c83ca2728ac87495
+      internalID: -258768138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Multiplication
+      rect:
+        serializedVersion: 2
+        x: 1355
+        y: 1196
+        width: 573
+        height: 576
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c8d89216c7184417eb9cfbda8cae18cb
+      internalID: -65785586
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Subtraction
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 429
+        width: 740
+        height: 184
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e5e58a78f7ff84981a61d6b3967a4fe1
+      internalID: 1671429661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Division
+      rect:
+        serializedVersion: 2
+        x: 1270
+        y: 197
+        width: 741
+        height: 642
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 67e2d817f7744442987073cc26b71404
+      internalID: -1506285610
       vertices: []
       indices: 
       edges: []
@@ -128,7 +191,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Neutrophil: -263130387
+      Addition: -258768138
+      Division: -1506285610
+      Four Basic Operations_2: 85783751
+      Four Basic Operations_5: -1496056304
+      Multiplication: -65785586
+      Subtraction: 1671429661
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

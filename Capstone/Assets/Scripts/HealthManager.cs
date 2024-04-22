@@ -44,8 +44,8 @@ public class HealthManager : MonoBehaviour
     {
         currentHealth = Mathf.Max(currentHealth - damage, 0);
         
-        if (currentHealth <= 0)
-            Debug.Log("We died");
+        // if (currentHealth <= 0)
+        //     Debug.Log("We died");
         
         healthText.text = currentHealth.ToString();
     }
