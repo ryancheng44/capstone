@@ -1,32 +1,57 @@
 using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 using System.Linq;
+using System.Reflection;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
+using TMPro;
 
 public class EventManager : MonoBehaviour
 {
+    public static EventManager instance { get; private set; }
+
+    [HideInInspector] public UnityEvent<Event, bool> onEventConclusion;
+    [HideInInspector] public UnityEvent onNewEvent;
+
     [SerializeField] private Event[] events;
     [SerializeField] private Sprite[] operationSprites;
 
     [SerializeField] private GameObject eventPanel;
+    [SerializeField] private GameObject problemPanel;
+
     [SerializeField] private TextMeshProUGUI eventNameText;
     [SerializeField] private TextMeshProUGUI timeText;
     [SerializeField] private TextMeshProUGUI firstNumberText;
     [SerializeField] private TextMeshProUGUI secondNumberText;
+    [SerializeField] private TextMeshProUGUI resultText;
+
     [SerializeField] private Image operationImage;
     [SerializeField] private TMP_InputField answerInputField;
 
     [SerializeField] private float minTimeBetweenEvents = 3.0f;
     [SerializeField] private float maxTimeBetweenEvents = 5.0f;
 
+    [SerializeField] private Transform effects;
+    [SerializeField] private TextMeshProUGUI effectTextPrefab;
+
     private Dictionary<string, Sprite> operationSpritesDict = new ();
-    
+    private List<TextMeshProUGUI> effectTexts = new ();
+
+    private Event currentEvent;
+
     private float timeSinceLastEvent = 0.0f;
     private float timeToAnswer = 0.0f;
 
     private bool eventActive = false;
     private int correctAnswer;
+
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -35,7 +60,34 @@ public class EventManager : MonoBehaviour
             operationSpritesDict.Add(sprite.name, sprite);
 
         foreach (Event e in events)
+        {
             e.operationsAllowed = new HashSet<FourBasicOperations>(e.operationsAllowed).ToArray();
+            e.effects = new float[] { e.effectOnGermSpeed, e.effectOnGermSpawnRate, e.effectOnGermHealth, e.effectOnGermDamage, e.effectOnTowerDamage };
+        }
+
+        FieldInfo[] fields = typeof(Event).GetFields();
+
+        foreach (FieldInfo field in fields)
+        {
+            if (field.Name.StartsWith("effectOn"))
+            {
+                TextMeshProUGUI effectText = Instantiate(effectTextPrefab, effects);
+                
+                string temp = field.Name.Substring(8);
+                string effectName = "" + temp[0];
+
+                for (int i = 1; i < temp.Length; i++)
+                {
+                    if (char.IsUpper(temp[i]))
+                        effectName += " ";
+
+                    effectName += temp[i];
+                }
+
+                effectText.name = effectName;
+                effectTexts.Add(effectText);
+            }
+        }
 
         timeSinceLastEvent = Random.Range(minTimeBetweenEvents, maxTimeBetweenEvents);
     }
@@ -47,15 +99,13 @@ public class EventManager : MonoBehaviour
         {
             if (timeToAnswer <= 0.0f)
             {
-                Debug.Log("Time's up!");
-                eventPanel.SetActive(false);
-                eventActive = false;
-                timeSinceLastEvent = Random.Range(minTimeBetweenEvents, maxTimeBetweenEvents);
+                onEventConclusion.Invoke(currentEvent, false);
+                DisplayResult(false);
             }
             else
             {
                 timeToAnswer -= Time.deltaTime;
-                timeText.text = Mathf.CeilToInt(timeToAnswer).ToString();
+                timeText.text = timeToAnswer.ToString("F1");
             }
 
             if (Input.GetKeyDown(KeyCode.Return))
@@ -66,6 +116,7 @@ public class EventManager : MonoBehaviour
             if (timeSinceLastEvent <= 0.0f)
             {
                 NewEvent();
+                onNewEvent.Invoke();
                 eventActive = true;
             }
             else
@@ -77,44 +128,90 @@ public class EventManager : MonoBehaviour
     {
         if (answerInputField.text == correctAnswer.ToString())
         {
-            eventPanel.SetActive(false);
-            eventActive = false;
-            timeSinceLastEvent = Random.Range(minTimeBetweenEvents, maxTimeBetweenEvents);
-            answerInputField.text = "";
-            Debug.Log("Correct!");
+            onEventConclusion.Invoke(currentEvent, true);
+            DisplayResult(true);
         }
         else
             Debug.Log("Incorrect!");
     }
 
+    private void DisplayResult(bool correct)
+    {
+        eventActive = false;
+        timeSinceLastEvent = float.MaxValue;
+
+        for (int i = 0; i < currentEvent.effects.Length; i++)
+        {
+            float effect = currentEvent.effects[i];
+            TextMeshProUGUI effectText = effectTexts[i];
+
+            if (effect != 0.0f)
+            {
+                effect *= correct ? 1.0f : -1.0f;
+
+                effectText.text = effectText.name + ": " + (effect > 0.0f ? "+" : "") + effect * 100 + "%";
+                effectText.gameObject.SetActive(true);
+            }
+            else
+                effectText.gameObject.SetActive(false);
+        }
+
+        timeText.gameObject.SetActive(false);
+        problemPanel.SetActive(false);
+
+        resultText.gameObject.SetActive(true);
+        resultText.text = "Due to " + (correct ? "good " : "bad ") + currentEvent.type.ToLower() + ", the following effects are applied until the next event:";
+
+        Invoke("CloseEvent", 3.0f);
+    }
+
+    private void CloseEvent()
+    {
+        resultText.gameObject.SetActive(false);
+        timeText.gameObject.SetActive(true);
+        problemPanel.SetActive(true);
+        answerInputField.text = string.Empty;
+        eventPanel.SetActive(false);
+        timeSinceLastEvent = Random.Range(minTimeBetweenEvents, maxTimeBetweenEvents);
+    }
+
     private void NewEvent()
     {
-        Event randomEvent = events[Random.Range(0, events.Length)];
+        currentEvent = events[Random.Range(0, events.Length)];
 
-        eventNameText.text = randomEvent.name;
-        timeToAnswer = randomEvent.time;
+        eventNameText.text = currentEvent.type + " " + currentEvent.level;
+        timeToAnswer = currentEvent.time;
 
-        FourBasicOperations operation = randomEvent.operationsAllowed[Random.Range(0, randomEvent.operationsAllowed.Length)];
+        FourBasicOperations operation = currentEvent.operationsAllowed[Random.Range(0, currentEvent.operationsAllowed.Length)];
 
         int minFirstNumber;
 
-        if (randomEvent.firstNumberDigits == 1)
+        if (currentEvent.firstNumberDigits == 1)
             minFirstNumber = 0;
         else
-            minFirstNumber = (int)Mathf.Pow(10, randomEvent.firstNumberDigits - 1);
+            minFirstNumber = (int)Mathf.Pow(10, currentEvent.firstNumberDigits - 1);
         
-        int maxFirstNumber = (int)Mathf.Pow(10, randomEvent.firstNumberDigits);
+        int maxFirstNumber = (int)Mathf.Pow(10, currentEvent.firstNumberDigits);
         int firstNumber = Random.Range(minFirstNumber, maxFirstNumber);
 
         int minSecondNumber;
 
-        if (randomEvent.secondNumberDigits == 1)
+        if (currentEvent.secondNumberDigits == 1)
             minSecondNumber = 0;
         else
-            minSecondNumber = (int)Mathf.Pow(10, randomEvent.secondNumberDigits - 1);
+            minSecondNumber = (int)Mathf.Pow(10, currentEvent.secondNumberDigits - 1);
 
-        int maxSecondNumber = (int)Mathf.Pow(10, randomEvent.secondNumberDigits);
+        int maxSecondNumber = (int)Mathf.Pow(10, currentEvent.secondNumberDigits);
         int secondNumber = Random.Range(minSecondNumber, maxSecondNumber);
+
+        if (currentEvent.negativesAllowed)
+        {
+            if (Random.Range(0, 2) == 0)
+                firstNumber *= -1;
+
+            if (Random.Range(0, 2) == 0)
+                secondNumber *= -1;
+        }
 
         switch (operation)
         {
@@ -127,7 +224,7 @@ public class EventManager : MonoBehaviour
                 operationImage.sprite = operationSpritesDict["Multiplication"];
                 break;
             case FourBasicOperations.Subtraction:
-                if (!randomEvent.negativesAllowed)
+                if (!currentEvent.negativesAllowed)
                     secondNumber = Random.Range(minSecondNumber, firstNumber + 1);
 
                 correctAnswer = firstNumber - secondNumber;
@@ -137,14 +234,14 @@ public class EventManager : MonoBehaviour
                 if (firstNumber != 0)
                 {
                     List<int> factors = FindFactors(firstNumber);
-                    List<int> factorsWithSecondNumberDigits = new ();
 
-                    foreach (int factor in factors)
-                        if (factor.ToString().Length == randomEvent.secondNumberDigits)
-                            factorsWithSecondNumberDigits.Add(factor);
+                    List<int> priorityFactors = factors.Where(factor => factor.ToString().Length == currentEvent.secondNumberDigits).ToList();
+                    List<int> vipFactors = priorityFactors.Where(factor => factor != 1 && factor != firstNumber).ToList();
 
-                    if (factorsWithSecondNumberDigits.Count > 0)
-                        secondNumber = factorsWithSecondNumberDigits[Random.Range(0, factorsWithSecondNumberDigits.Count)];
+                    if (vipFactors.Count > 0)
+                        secondNumber = vipFactors[Random.Range(0, vipFactors.Count)];
+                    else if (priorityFactors.Count > 0)
+                        secondNumber = priorityFactors[Random.Range(0, priorityFactors.Count)];
                     else
                         secondNumber = factors[Random.Range(0, factors.Count)];
                 }

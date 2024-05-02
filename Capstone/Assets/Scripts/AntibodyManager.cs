@@ -1,6 +1,6 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using TMPro;
 
 public class AntibodyManager : MonoBehaviour
 {

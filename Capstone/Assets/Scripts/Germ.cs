@@ -20,10 +20,6 @@ public class Germ : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currentSpeed = speed;
-        currentHealth = health;
-        currentDamagePerSecond = damagePerSecond;
-
         currentWaypointIndex = 0;
         currentWaypoint = Path.instance.points[currentWaypointIndex];
         transform.position = currentWaypoint;
@@ -58,13 +54,38 @@ public class Germ : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, currentWaypoint, currentSpeed * Time.deltaTime);
     }
 
-    private void OnEnable() => AntibodyManager.instance.onAntibodiesChange.AddListener(Buff);
-    private void OnDisable() => AntibodyManager.instance.onAntibodiesChange.RemoveListener(Buff);
-
-    private void Buff(float buff)
+    private void OnEnable()
     {
-        currentSpeed = speed * (1.0f - buff);
-        currentHealth = health * (1.0f + buff);
-        currentDamagePerSecond = damagePerSecond * (1.0f + buff);
+        AntibodyManager.instance.onAntibodiesChange.AddListener(OnAntibodiesChange);
+        EventManager.instance.onEventConclusion.AddListener(OnEventConclusion);
+        EventManager.instance.onNewEvent.AddListener(Reset);
+    }
+
+    private void OnDisable()
+    {
+        AntibodyManager.instance.onAntibodiesChange.RemoveListener(OnAntibodiesChange);
+        EventManager.instance.onEventConclusion.RemoveListener(OnEventConclusion);
+        EventManager.instance.onNewEvent.RemoveListener(Reset);
+    }
+
+    private void OnAntibodiesChange(float effect)
+    {
+        currentSpeed = speed * (1.0f - effect);
+        currentHealth = health * (1.0f + effect);
+        currentDamagePerSecond = damagePerSecond * (1.0f + effect);
+    }
+
+    public void OnEventConclusion(Event e, bool correct)
+    {
+        currentSpeed = speed * (1.0f + e.effectOnGermSpeed * (correct ? 1.0f : -1.0f));
+        currentHealth = health * (1.0f + e.effectOnGermHealth * (correct ? 1.0f : -1.0f));
+        currentDamagePerSecond = damagePerSecond * (1.0f + e.effectOnGermDamage * (correct ? 1.0f : -1.0f));
+    }
+
+    public void Reset()
+    {
+        currentSpeed = speed;
+        currentHealth = health;
+        currentDamagePerSecond = damagePerSecond;
     }
 }

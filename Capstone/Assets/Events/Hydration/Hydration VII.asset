@@ -10,17 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e9ec8d856e84a4b6ab713e81444a6b4a, type: 3}
-  m_Name: Hydration I
+  m_Name: Hydration VII
   m_EditorClassIdentifier: 
-  name: Hydration I
+  type: Hydration
+  level: VII
   firstNumberDigits: 1
   secondNumberDigits: 1
   operationsAllowed: 0000000001000000
-  negativesAllowed: 0
-  time: 10
-  effectOnGermSpeed: 0
+  negativesAllowed: 1
+  time: 3
+  effects: []
+  effectOnGermSpeed: 0.35
   effectOnGermSpawnRate: 0
   effectOnGermHealth: 0
   effectOnGermDamage: 0
   effectOnTowerDamage: 0
-  result: 

@@ -1,5 +1,5 @@
-using TMPro;
 using UnityEngine;
+using TMPro;
 
 public class HealthManager : MonoBehaviour
 {
@@ -7,6 +7,7 @@ public class HealthManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI healthText;
     [SerializeField] private TextMeshProUGUI healthRegenText;
+
     [SerializeField] private float maxHealth = 100;
     [SerializeField] private float healthRegen = 1;
 
@@ -34,7 +35,7 @@ public class HealthManager : MonoBehaviour
         if (timer >= 1.0f)
         {
             currentHealth = Mathf.Min(currentHealth + healthRegen, maxHealth);
-            healthText.text = Mathf.FloorToInt(currentHealth).ToString();
+            healthText.text = Mathf.CeilToInt(currentHealth).ToString();
 
             timer = 0.0f;
         }
@@ -43,10 +44,6 @@ public class HealthManager : MonoBehaviour
     public void TakeDamage(float damage)
     {
         currentHealth = Mathf.Max(currentHealth - damage, 0);
-        
-        // if (currentHealth <= 0)
-        //     Debug.Log("We died");
-        
         healthText.text = currentHealth.ToString();
     }
 }

@@ -12,8 +12,6 @@ public class Neutrophil : Tower
             AttractGerm(colliders[0].GetComponent<Germ>());
         else
         {
-            // Potential future rework; don't attract germs that are already being attracted by this or another neutrophil
-
             Germ furthestGerm = null;
             int furthestWaypointIndex = -1;
 

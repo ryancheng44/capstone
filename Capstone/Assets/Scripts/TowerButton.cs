@@ -1,6 +1,6 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class TowerButton : MonoBehaviour
 {
@@ -19,6 +19,6 @@ public class TowerButton : MonoBehaviour
     public void SpawnTower()
     {
         AntibodyManager.instance.ChangeAntibodiesBy(-towerPrefab.cost);
-        Instantiate(towerPrefab);
+        Shop.instance.BeginTowerPlacement(Instantiate(towerPrefab));
     }
 }
