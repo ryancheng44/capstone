@@ -1,3 +1,5 @@
+// Potentially allow maxHealth and healthRegen to be affected by Events and other things
+
 using UnityEngine;
 using TMPro;
 
@@ -8,8 +10,8 @@ public class HealthManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI healthText;
     [SerializeField] private TextMeshProUGUI healthRegenText;
 
-    [SerializeField] private float maxHealth = 100;
-    [SerializeField] private float healthRegen = 1;
+    [SerializeField] private float maxHealth;
+    [SerializeField] private float healthRegen;
 
     private float currentHealth;
     private float timer = 0.0f;
@@ -44,6 +46,6 @@ public class HealthManager : MonoBehaviour
     public void TakeDamage(float damage)
     {
         currentHealth = Mathf.Max(currentHealth - damage, 0);
-        healthText.text = currentHealth.ToString();
+        healthText.text = Mathf.CeilToInt(currentHealth).ToString();
     }
 }

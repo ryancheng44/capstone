@@ -1,15 +1,18 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Germ : MonoBehaviour
 {
-    [SerializeField] private float speed = 1.0f;
-    [SerializeField] private float health = 10.0f;
-    [SerializeField] private float damagePerSecond = 1.0f;
-    [SerializeField] private int antibodiesAwarded = 10;
+    [Header("Stats")]
+    [SerializeField] private int antibodiesAwarded;
+    [SerializeField] private float damagePerSecond;
+    [SerializeField] private float health;
+    [SerializeField] private float speed;
 
-    private float currentSpeed;
-    private float currentHealth;
+    private int currentAntibodiesAwarded;
     private float currentDamagePerSecond;
+    private float currentHealth;
+    private float currentSpeed;
 
     [HideInInspector] public int currentWaypointIndex;
     [HideInInspector] public Vector3 currentWaypoint;
@@ -21,7 +24,7 @@ public class Germ : MonoBehaviour
     void Start()
     {
         currentWaypointIndex = 0;
-        currentWaypoint = Path.instance.points[currentWaypointIndex];
+        currentWaypoint = Path.Points[currentWaypointIndex];
         transform.position = currentWaypoint;
     }
 
@@ -38,54 +41,31 @@ public class Germ : MonoBehaviour
         if (Vector3.Distance(transform.position, currentWaypoint) < threshold)
         {
             currentWaypointIndex++;
-            if (currentWaypointIndex >= Path.instance.points.Length)
+            if (currentWaypointIndex >= Path.Points.Length)
             {
                 if (currentWaypointIndex == int.MaxValue)
-                    AntibodyManager.instance.ChangeAntibodiesBy(antibodiesAwarded);
+                    AntibodyManager.Instance.ChangeAntibodiesBy(currentAntibodiesAwarded);
                 else
                     Debug.Log("Germ reached the end of the path");
 
+                GermManager.Instance.GermDied();
                 Destroy(gameObject);
                 return;
             }
-            currentWaypoint = Path.instance.points[currentWaypointIndex];
+            currentWaypoint = Path.Points[currentWaypointIndex];
         }
 
         transform.position = Vector3.MoveTowards(transform.position, currentWaypoint, currentSpeed * Time.deltaTime);
     }
 
-    private void OnEnable()
-    {
-        AntibodyManager.instance.onAntibodiesChange.AddListener(OnAntibodiesChange);
-        EventManager.instance.onEventConclusion.AddListener(OnEventConclusion);
-        EventManager.instance.onNewEvent.AddListener(Reset);
-    }
+    private void OnEnable() => EffectsManager.Instance.onEffectsChange.AddListener(OnEffectsChange);
+    private void OnDisable() => EffectsManager.Instance.onEffectsChange.RemoveListener(OnEffectsChange);
 
-    private void OnDisable()
+    public void OnEffectsChange(Dictionary<string, float> effectsDict)
     {
-        AntibodyManager.instance.onAntibodiesChange.RemoveListener(OnAntibodiesChange);
-        EventManager.instance.onEventConclusion.RemoveListener(OnEventConclusion);
-        EventManager.instance.onNewEvent.RemoveListener(Reset);
-    }
-
-    private void OnAntibodiesChange(float effect)
-    {
-        currentSpeed = speed * (1.0f - effect);
-        currentHealth = health * (1.0f + effect);
-        currentDamagePerSecond = damagePerSecond * (1.0f + effect);
-    }
-
-    public void OnEventConclusion(Event e, bool correct)
-    {
-        currentSpeed = speed * (1.0f + e.effectOnGermSpeed * (correct ? 1.0f : -1.0f));
-        currentHealth = health * (1.0f + e.effectOnGermHealth * (correct ? 1.0f : -1.0f));
-        currentDamagePerSecond = damagePerSecond * (1.0f + e.effectOnGermDamage * (correct ? 1.0f : -1.0f));
-    }
-
-    public void Reset()
-    {
-        currentSpeed = speed;
-        currentHealth = health;
-        currentDamagePerSecond = damagePerSecond;
+        currentAntibodiesAwarded = (int)(antibodiesAwarded * (1.0f + effectsDict["Germ Antibodies Awarded"]));
+        currentDamagePerSecond = damagePerSecond * (1.0f + effectsDict["Germ Damage Per Second"]);
+        currentHealth = health * (1.0f + effectsDict["Germ Health"]);
+        currentSpeed = speed * (1.0f + effectsDict["Germ Speed"]);
     }
 }

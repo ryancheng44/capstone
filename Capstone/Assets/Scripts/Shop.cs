@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(Animator))]
 public class Shop : MonoBehaviour
@@ -13,11 +13,14 @@ public class Shop : MonoBehaviour
     [SerializeField] private GameObject towerPlacementPanel;
     [SerializeField] private TMP_InputField xInputField;
     [SerializeField] private TMP_InputField yInputField;
+    [SerializeField] private LayerMask offLimitsLayer;
 
     private Animator animator;
     private bool isHidden = false;
 
-    private Tower towerToPlace;
+    private Tower towerToPlace = null;
+
+    private Dictionary<string, float> effectsDict = new ();
 
     // Start is called before the first frame update
     void Start()
@@ -38,7 +41,22 @@ public class Shop : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.T))
             Toggle();
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (towerToPlace != null)
+            {
+                Destroy(towerToPlace.gameObject);
+                towerToPlace = null;
+                towerPlacementPanel.SetActive(false);
+            }
+        }
     }
+
+    private void OnEnable() => EffectsManager.Instance.onEffectsChange.AddListener(OnEffectsChange);
+    private void OnDisable() => EffectsManager.Instance.onEffectsChange.RemoveListener(OnEffectsChange);
+
+    private void OnEffectsChange(Dictionary<string, float> effectsDict) => this.effectsDict = effectsDict;
 
     public void Toggle()
     {
@@ -46,9 +64,12 @@ public class Shop : MonoBehaviour
         animator.Play(isHidden ? "Hide" : "Show");
     }
 
-    public void BeginTowerPlacement(Tower towerPrefab)
+    public void SpawnTower(Tower towerPrefab)
     {
-        towerToPlace = towerPrefab;
+        if (towerToPlace != null)
+            return;
+        
+        towerToPlace = Instantiate(towerPrefab, Vector3.zero, Quaternion.identity);
         towerPlacementPanel.SetActive(true);
     }
 
@@ -57,15 +78,28 @@ public class Shop : MonoBehaviour
         if (towerToPlace == null)
             return;
 
-        float x = xInputField.text == string.Empty || xInputField.text == "-" ? 0.0f : float.Parse(xInputField.text);
-        float y = yInputField.text == string.Empty || yInputField.text == "-" ? 0.0f : float.Parse(yInputField.text);
+        if (float.TryParse(xInputField.text, out float x)) { }
+        else x = 0;
 
-        towerToPlace.transform.position = new Vector3(x, y, 0.0f);
+        if (float.TryParse(yInputField.text, out float y)) { }
+        else y = 0;
+
+        towerToPlace.GetComponent<Rigidbody2D>().MovePosition(new Vector2(x, y));
     }
 
     public void PlaceTower()
     {
-        towerToPlace.isPlaced = true;
+        if (towerToPlace.GetComponent<Collider2D>().IsTouchingLayers(offLimitsLayer))
+        {
+            Debug.Log("Can't place tower here");
+            return;
+        }
+    
+        AntibodyManager.Instance.ChangeAntibodiesBy(-towerToPlace.Cost);
+
+        towerToPlace.enabled = true;
+        towerToPlace.OnEffectsChange(effectsDict);
+        towerToPlace.GetComponent<SpriteRenderer>().color = Color.white;
         towerToPlace = null;
 
         xInputField.text = string.Empty;

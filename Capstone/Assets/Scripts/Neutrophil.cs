@@ -4,7 +4,7 @@ public class Neutrophil : Tower
 {
     protected override void Attack()
     {   
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, radius, germsLayer);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, range, germsLayer);
         
         if (colliders.Length == 0)
             return;

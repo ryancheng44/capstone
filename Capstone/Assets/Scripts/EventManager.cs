@@ -1,42 +1,42 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
 
 public class EventManager : MonoBehaviour
 {
-    public static EventManager instance { get; private set; }
-
-    [HideInInspector] public UnityEvent<Event, bool> onEventConclusion;
-    [HideInInspector] public UnityEvent onNewEvent;
+    public static EventManager Instance { get; private set; }
 
     [SerializeField] private Event[] events;
     [SerializeField] private Sprite[] operationSprites;
 
     [SerializeField] private GameObject eventPanel;
-    [SerializeField] private GameObject problemPanel;
-
     [SerializeField] private TextMeshProUGUI eventNameText;
     [SerializeField] private TextMeshProUGUI timeText;
+
+    [SerializeField] private GameObject problem;
     [SerializeField] private TextMeshProUGUI firstNumberText;
-    [SerializeField] private TextMeshProUGUI secondNumberText;
-    [SerializeField] private TextMeshProUGUI resultText;
-
     [SerializeField] private Image operationImage;
+    [SerializeField] private TextMeshProUGUI secondNumberText;
     [SerializeField] private TMP_InputField answerInputField;
+    
+    [SerializeField] private TextMeshProUGUI resultText;
+    [SerializeField] private TextMeshProUGUI germAntibodiesAwardedEffectText;
+    [SerializeField] private TextMeshProUGUI germDamagePerSecondEffectText;
+    [SerializeField] private TextMeshProUGUI germHealthEffectText;
+    [SerializeField] private TextMeshProUGUI germSpawnRateEffectText;
+    [SerializeField] private TextMeshProUGUI germSpeedEffectText;
+    [SerializeField] private TextMeshProUGUI towerAttackRateEffectText;
+    [SerializeField] private TextMeshProUGUI towerDamageEffectText;
+    [SerializeField] private TextMeshProUGUI towerRangeEffectText;
 
-    [SerializeField] private float minTimeBetweenEvents = 3.0f;
-    [SerializeField] private float maxTimeBetweenEvents = 5.0f;
-
-    [SerializeField] private Transform effects;
-    [SerializeField] private TextMeshProUGUI effectTextPrefab;
+    [SerializeField] private float minTimeBetweenEvents;
+    [SerializeField] private float maxTimeBetweenEvents;
 
     private Dictionary<string, Sprite> operationSpritesDict = new ();
-    private List<TextMeshProUGUI> effectTexts = new ();
-
+    
+    private Level currentLevel;
     private Event currentEvent;
 
     private float timeSinceLastEvent = 0.0f;
@@ -45,51 +45,20 @@ public class EventManager : MonoBehaviour
     private bool eventActive = false;
     private int correctAnswer;
 
-    private void Awake()
-    {
-        if (instance == null)
-            instance = this;
-        else
-            Destroy(gameObject);
-    }
-
     // Start is called before the first frame update
     void Start()
     {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+
+        timeSinceLastEvent = Random.Range(minTimeBetweenEvents, maxTimeBetweenEvents);
+
         foreach (Sprite sprite in operationSprites)
             operationSpritesDict.Add(sprite.name, sprite);
 
-        foreach (Event e in events)
-        {
-            e.operationsAllowed = new HashSet<FourBasicOperations>(e.operationsAllowed).ToArray();
-            e.effects = new float[] { e.effectOnGermSpeed, e.effectOnGermSpawnRate, e.effectOnGermHealth, e.effectOnGermDamage, e.effectOnTowerDamage };
-        }
-
-        FieldInfo[] fields = typeof(Event).GetFields();
-
-        foreach (FieldInfo field in fields)
-        {
-            if (field.Name.StartsWith("effectOn"))
-            {
-                TextMeshProUGUI effectText = Instantiate(effectTextPrefab, effects);
-                
-                string temp = field.Name.Substring(8);
-                string effectName = "" + temp[0];
-
-                for (int i = 1; i < temp.Length; i++)
-                {
-                    if (char.IsUpper(temp[i]))
-                        effectName += " ";
-
-                    effectName += temp[i];
-                }
-
-                effectText.name = effectName;
-                effectTexts.Add(effectText);
-            }
-        }
-
-        timeSinceLastEvent = Random.Range(minTimeBetweenEvents, maxTimeBetweenEvents);
+        currentLevel = LevelManager.Instance.currentLevel;
     }
 
     // Update is called once per frame
@@ -99,8 +68,7 @@ public class EventManager : MonoBehaviour
         {
             if (timeToAnswer <= 0.0f)
             {
-                onEventConclusion.Invoke(currentEvent, false);
-                DisplayResult(false);
+                HandleEventConclusion(false);
             }
             else
             {
@@ -116,7 +84,6 @@ public class EventManager : MonoBehaviour
             if (timeSinceLastEvent <= 0.0f)
             {
                 NewEvent();
-                onNewEvent.Invoke();
                 eventActive = true;
             }
             else
@@ -127,40 +94,52 @@ public class EventManager : MonoBehaviour
     public void SubmitAnswer()
     {
         if (answerInputField.text == correctAnswer.ToString())
-        {
-            onEventConclusion.Invoke(currentEvent, true);
-            DisplayResult(true);
-        }
+            HandleEventConclusion(true);
         else
             Debug.Log("Incorrect!");
+        
+        // TODO: Incorrect animation
     }
 
-    private void DisplayResult(bool correct)
+    private void HandleEventConclusion(bool success)
     {
         eventActive = false;
         timeSinceLastEvent = float.MaxValue;
 
-        for (int i = 0; i < currentEvent.effects.Length; i++)
+        resultText.text = "Due to " + (success ? currentEvent.successDescription : currentEvent.failureDescription) + ", the following effects have been applied until the next event:"; 
+
+        Dictionary<string, float> effectsDict = new ();
+
+        void AddEffectIfAffecting(bool affecting, string key, TextMeshProUGUI text, bool invert = false)
         {
-            float effect = currentEvent.effects[i];
-            TextMeshProUGUI effectText = effectTexts[i];
-
-            if (effect != 0.0f)
+            if (affecting)
             {
-                effect *= correct ? 1.0f : -1.0f;
-
-                effectText.text = effectText.name + ": " + (effect > 0.0f ? "+" : "") + effect * 100 + "%";
-                effectText.gameObject.SetActive(true);
+                int temp = (int)(Random.Range(currentLevel.minEffect, currentLevel.maxEffect) * ((invert ? !success : success) ? 1.0f : -1.0f) * 100.0f);
+                float effect = temp / 100.0f;
+                effectsDict.Add(key, effect);
+                text.text = key + ": " + (effect > 0.0f ? "+" : "") + effect * 100 + "%";
+                text.gameObject.SetActive(true);
             }
             else
-                effectText.gameObject.SetActive(false);
+            {
+                effectsDict.Add(key, 0.0f);
+                text.gameObject.SetActive(false);
+            }
         }
 
-        timeText.gameObject.SetActive(false);
-        problemPanel.SetActive(false);
+        AddEffectIfAffecting(currentEvent.affectGermAntibodiesAwarded, "Germ Antibodies Awarded", germAntibodiesAwardedEffectText);
+        AddEffectIfAffecting(currentEvent.affectGermDamagePerSecond, "Germ Damage Per Second", germDamagePerSecondEffectText, true);
+        AddEffectIfAffecting(currentEvent.affectGermHealth, "Germ Health", germHealthEffectText, true);
+        AddEffectIfAffecting(currentEvent.affectGermSpawnRate, "Germ Spawn Rate", germSpawnRateEffectText, true);
+        AddEffectIfAffecting(currentEvent.affectGermSpeed, "Germ Speed", germSpeedEffectText);
+        AddEffectIfAffecting(currentEvent.affectTowerDamage, "Tower Damage", towerDamageEffectText);
+        AddEffectIfAffecting(currentEvent.affectTowerAttackRate, "Tower Attack Rate", towerAttackRateEffectText);
+        AddEffectIfAffecting(currentEvent.affectTowerRange, "Tower Range", towerRangeEffectText);
+
+        EffectsManager.Instance.OnEventConclusion(effectsDict);
 
         resultText.gameObject.SetActive(true);
-        resultText.text = "Due to " + (correct ? "good " : "bad ") + currentEvent.type.ToLower() + ", the following effects are applied until the next event:";
+        problem.SetActive(false);
 
         Invoke("CloseEvent", 3.0f);
     }
@@ -168,49 +147,61 @@ public class EventManager : MonoBehaviour
     private void CloseEvent()
     {
         resultText.gameObject.SetActive(false);
-        timeText.gameObject.SetActive(true);
-        problemPanel.SetActive(true);
+        
         answerInputField.text = string.Empty;
+        problem.SetActive(true);
+        
         eventPanel.SetActive(false);
+        
         timeSinceLastEvent = Random.Range(minTimeBetweenEvents, maxTimeBetweenEvents);
     }
 
     private void NewEvent()
     {
+        EffectsManager.Instance.OnNewEvent();
+
         currentEvent = events[Random.Range(0, events.Length)];
 
-        eventNameText.text = currentEvent.type + " " + currentEvent.level;
-        timeToAnswer = currentEvent.time;
+        eventNameText.text = currentEvent.name;
+        timeToAnswer = currentLevel.time;
 
-        FourBasicOperations operation = currentEvent.operationsAllowed[Random.Range(0, currentEvent.operationsAllowed.Length)];
+        FourBasicOperations operation = currentLevel.operationsAllowed[Random.Range(0, currentLevel.operationsAllowed.Length)];
 
         int minFirstNumber;
 
-        if (currentEvent.firstNumberDigits == 1)
+        if (currentLevel.firstNumberDigits == 1)
             minFirstNumber = 0;
         else
-            minFirstNumber = (int)Mathf.Pow(10, currentEvent.firstNumberDigits - 1);
+            minFirstNumber = (int)Mathf.Pow(10, currentLevel.firstNumberDigits - 1);
         
-        int maxFirstNumber = (int)Mathf.Pow(10, currentEvent.firstNumberDigits);
+        int maxFirstNumber = (int)Mathf.Pow(10, currentLevel.firstNumberDigits);
         int firstNumber = Random.Range(minFirstNumber, maxFirstNumber);
 
         int minSecondNumber;
 
-        if (currentEvent.secondNumberDigits == 1)
+        if (currentLevel.secondNumberDigits == 1)
             minSecondNumber = 0;
         else
-            minSecondNumber = (int)Mathf.Pow(10, currentEvent.secondNumberDigits - 1);
+            minSecondNumber = (int)Mathf.Pow(10, currentLevel.secondNumberDigits - 1);
 
-        int maxSecondNumber = (int)Mathf.Pow(10, currentEvent.secondNumberDigits);
+        int maxSecondNumber = (int)Mathf.Pow(10, currentLevel.secondNumberDigits);
         int secondNumber = Random.Range(minSecondNumber, maxSecondNumber);
 
-        if (currentEvent.negativesAllowed)
+        if (currentLevel.useNegatives)
         {
             if (Random.Range(0, 2) == 0)
+            {
                 firstNumber *= -1;
 
-            if (Random.Range(0, 2) == 0)
+                if (Random.Range(0, 2) == 0)
+                    secondNumber *= -1;
+            }
+            else {
                 secondNumber *= -1;
+
+                if (Random.Range(0, 2) == 0)
+                    firstNumber *= -1;
+            }
         }
 
         switch (operation)
@@ -224,7 +215,7 @@ public class EventManager : MonoBehaviour
                 operationImage.sprite = operationSpritesDict["Multiplication"];
                 break;
             case FourBasicOperations.Subtraction:
-                if (!currentEvent.negativesAllowed)
+                if (!currentLevel.useNegatives && firstNumber < secondNumber)
                     secondNumber = Random.Range(minSecondNumber, firstNumber + 1);
 
                 correctAnswer = firstNumber - secondNumber;
@@ -235,7 +226,7 @@ public class EventManager : MonoBehaviour
                 {
                     List<int> factors = FindFactors(firstNumber);
 
-                    List<int> priorityFactors = factors.Where(factor => factor.ToString().Length == currentEvent.secondNumberDigits).ToList();
+                    List<int> priorityFactors = factors.Where(factor => factor.ToString().Length == currentLevel.secondNumberDigits).ToList();
                     List<int> vipFactors = priorityFactors.Where(factor => factor != 1 && factor != firstNumber).ToList();
 
                     if (vipFactors.Count > 0)

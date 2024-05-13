@@ -1,74 +1,88 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GermManager : MonoBehaviour
 {
-    [SerializeField] private Germ[] germPrefabs;
+    public static GermManager Instance { get; private set; }
 
-    [SerializeField] private float minSpawnInterval = 0.5f;
-    [SerializeField] private float maxSpawnInterval = 2.0f;
+    private Level currentLevel;
+    private int currentWaveIndex = 0;
+    private Wave currentWave;
 
-    private float currentMinSpawnInterval;
-    private float currentMaxSpawnInterval;
-
-    private Event currentEvent;
-    private bool correct;
+    private Germ currentGerm;
+    private int germsToSpawn = 0;
+    private int germsAlive = 0;
+    private float spawnRate;
+    private float currentSpawnRate;
 
     private float timer = 0.0f;
+
+    private Dictionary<string, float> effectsDict = new ();
 
     // Start is called before the first frame update
     void Start()
     {
-        currentMinSpawnInterval = minSpawnInterval;
-        currentMaxSpawnInterval = maxSpawnInterval;
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
 
-        timer = Random.Range(currentMinSpawnInterval, currentMaxSpawnInterval);
+        currentLevel = LevelManager.Instance.currentLevel;
+        NewWave();
+    }
+
+    private void NewWave()
+    {
+        if (currentWaveIndex >= currentLevel.waves.Length)
+            return;
+
+        currentWave = currentLevel.waves[currentWaveIndex];
+
+        currentGerm = currentWave.germ;
+        germsToSpawn = currentWave.count;
+        spawnRate = currentWave.spawnRate;
+
+        OnEffectsChange(effectsDict);
+        currentWaveIndex++;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (timer <= 0.0f)
+        if (timer <= 0.0f && germsToSpawn > 0)
         {
-            Germ germ = Instantiate(germPrefabs[Random.Range(0, germPrefabs.Length)], transform.position, Quaternion.identity);
-            
-            if (currentEvent == null)
-                germ.Reset();
-            else
-                germ.OnEventConclusion(currentEvent, correct);
+            Germ germ = Instantiate(currentGerm, transform.position, Quaternion.identity);
+            germ.OnEffectsChange(effectsDict);
 
-            timer = Random.Range(currentMinSpawnInterval, currentMaxSpawnInterval);
+            germsAlive++;
+            germsToSpawn--;
+
+            if (germsToSpawn <= 0)
+            {
+                NewWave();
+                timer = 1f;
+            }
+            else
+                timer = 1f / currentSpawnRate;
         }
         else
             timer -= Time.deltaTime;
     }
     
-    private void OnEnable()
+    private void OnEnable() => EffectsManager.Instance.onEffectsChange.AddListener(OnEffectsChange);
+    private void OnDisable() => EffectsManager.Instance.onEffectsChange.RemoveListener(OnEffectsChange);
+
+    private void OnEffectsChange(Dictionary<string, float> effectsDict)
     {
-        EventManager.instance.onEventConclusion.AddListener(OnEventConclusion);
-        EventManager.instance.onNewEvent.AddListener(Reset);
+        currentSpawnRate = spawnRate * (1.0f + effectsDict["Germ Spawn Rate"]);
+        this.effectsDict = effectsDict;
     }
 
-    private void OnDisable()
+    public void GermDied()
     {
-        EventManager.instance.onEventConclusion.RemoveListener(OnEventConclusion);
-        EventManager.instance.onNewEvent.RemoveListener(Reset);
-    }
+        germsAlive--;
 
-    private void OnEventConclusion(Event e, bool correct)
-    {
-        currentMinSpawnInterval = minSpawnInterval * (1.0f + e.effectOnGermSpawnRate * (correct ? 1.0f : -1.0f));
-        currentMaxSpawnInterval = maxSpawnInterval * (1.0f + e.effectOnGermSpawnRate * (correct ? 1.0f : -1.0f));
-
-        currentEvent = e;
-        this.correct = correct;
-    }
-
-    private void Reset()
-    {
-        currentMinSpawnInterval = minSpawnInterval;
-        currentMaxSpawnInterval = maxSpawnInterval;
-
-        currentEvent = null;
-        correct = false;
+        if (germsAlive <= 0 && currentWaveIndex >= currentLevel.waves.Length)
+            GameManager.Instance.LevelComplete();
     }
 }

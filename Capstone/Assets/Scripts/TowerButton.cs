@@ -4,7 +4,7 @@ using TMPro;
 
 public class TowerButton : MonoBehaviour
 {
-    [SerializeField] private Image towerImage;
+    [SerializeField] private Image profilePic;
     [SerializeField] private TextMeshProUGUI costText;
     
     private Tower towerPrefab;
@@ -12,13 +12,9 @@ public class TowerButton : MonoBehaviour
     public void Init(Tower towerPrefab)
     {
         this.towerPrefab = towerPrefab;
-        towerImage.sprite = towerPrefab.towerImage;
-        costText.text = towerPrefab.cost.ToString();
+        profilePic.sprite = towerPrefab.ProfilePic;
+        costText.text = towerPrefab.Cost.ToString();
     }
 
-    public void SpawnTower()
-    {
-        AntibodyManager.instance.ChangeAntibodiesBy(-towerPrefab.cost);
-        Shop.instance.BeginTowerPlacement(Instantiate(towerPrefab));
-    }
+    public void OnClick() => Shop.instance.SpawnTower(towerPrefab);
 }

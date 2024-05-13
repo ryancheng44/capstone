@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1825902298056861932}
   - component: {fileID: 152021473776380145}
   m_Layer: 5
-  m_Name: Tower Image
+  m_Name: Profile Pic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -279,7 +279,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1782617425575082644}
         m_TargetAssemblyTypeName: TowerButton, Assembly-CSharp
-        m_MethodName: SpawnTower
+        m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -301,7 +301,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58bfc85c298134ec7aa6b1f05b0786de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  towerImage: {fileID: 152021473776380145}
+  profilePic: {fileID: 152021473776380145}
   costText: {fileID: 7002332995326104895}
 --- !u!1 &5149613202736206633
 GameObject:

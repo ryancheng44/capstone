@@ -133,9 +133,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5ecc082d52c548e5b029739a98b73fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
-  health: 10
-  damagePerSecond: 1
   antibodiesAwarded: 10
+  damagePerSecond: 1
+  health: 10
+  speed: 1
   currentWaypointIndex: 0
   currentWaypoint: {x: 0, y: 0, z: 0}
