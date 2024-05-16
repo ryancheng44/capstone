@@ -22,8 +22,11 @@ public class LevelManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        foreach (Level level in levels)
-            level.operationsAllowed = new HashSet<FourBasicOperations>(level.operationsAllowed).ToArray();
+        for (int i = 0; i < levels.Length; i++)
+        {
+            levels[i].operationsAllowed = new HashSet<FourBasicOperations>(levels[i].operationsAllowed).ToArray();
+            MenuManager.Instance.CreateLevelButton(i + 1);
+        }
         
         currentLevel = levels[currentLevelIndex - 1];
     }

@@ -17,6 +17,6 @@ MonoBehaviour:
   useNegatives: 1
   firstNumberDigits: 1
   secondNumberDigits: 1
-  time: 3
+  time: 5
   minEffect: 0.1
   maxEffect: 0.2

@@ -13,13 +13,19 @@ MonoBehaviour:
   m_Name: Level 01
   m_EditorClassIdentifier: 
   waves:
-  - {fileID: 11400000, guid: 2df2e73001d954b46974ca3318badfd3, type: 2}
-  - {fileID: 11400000, guid: 2f69e1c5b86bd436a89e90d540bde2f6, type: 2}
-  - {fileID: 11400000, guid: 61f15535acd1946ae8956e780319bf2f, type: 2}
+  - {fileID: 11400000, guid: 7079fea337ec64ba59f172856b6e7039, type: 2}
+  - {fileID: 11400000, guid: 6cfac76728dac42f5828d6ab77c54a16, type: 2}
+  - {fileID: 11400000, guid: e3657167a93854a44bc169eca1a781b1, type: 2}
+  - {fileID: 11400000, guid: 81e0619496bae4140b0c185abe58158f, type: 2}
+  - {fileID: 11400000, guid: dff7fb83345254ed7b4ce50a8ccec0d5, type: 2}
+  - {fileID: 11400000, guid: f70696b65855a4032a8d830fe00e60c3, type: 2}
+  - {fileID: 11400000, guid: e997bf418eaec460596694c74b8773d0, type: 2}
+  - {fileID: 11400000, guid: 305681926ff9443238909b94bc1f0e00, type: 2}
+  - {fileID: 11400000, guid: d6b5c887a6d594b5c9556f10c2a5f4dc, type: 2}
   operationsAllowed: 0000000001000000
   useNegatives: 0
   firstNumberDigits: 1
   secondNumberDigits: 1
-  time: 3
+  time: 5
   minEffect: 0.1
   maxEffect: 0.2

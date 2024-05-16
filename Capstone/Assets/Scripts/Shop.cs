@@ -61,7 +61,7 @@ public class Shop : MonoBehaviour
     public void Toggle()
     {
         isHidden = !isHidden;
-        animator.Play(isHidden ? "Hide" : "Show");
+        animator.SetBool("isHidden", isHidden);
     }
 
     public void SpawnTower(Tower towerPrefab)

@@ -141,7 +141,7 @@ public class EventManager : MonoBehaviour
         resultText.gameObject.SetActive(true);
         problem.SetActive(false);
 
-        Invoke("CloseEvent", 3.0f);
+        Invoke("CloseEvent", 5.0f);
     }
 
     private void CloseEvent()

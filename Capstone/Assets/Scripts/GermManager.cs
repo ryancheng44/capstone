@@ -51,7 +51,7 @@ public class GermManager : MonoBehaviour
     {
         if (timer <= 0.0f && germsToSpawn > 0)
         {
-            Germ germ = Instantiate(currentGerm, transform.position, Quaternion.identity);
+            Germ germ = Instantiate(currentGerm, Path.Points[0], Quaternion.identity);
             germ.OnEffectsChange(effectsDict);
 
             germsAlive++;

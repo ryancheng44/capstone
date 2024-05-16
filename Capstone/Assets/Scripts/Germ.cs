@@ -13,9 +13,10 @@ public class Germ : MonoBehaviour
     private float currentDamagePerSecond;
     private float currentHealth;
     private float currentSpeed;
+    private float totalDamageTaken = 0.0f;
 
-    [HideInInspector] public int currentWaypointIndex;
-    [HideInInspector] public Vector3 currentWaypoint;
+    public int currentWaypointIndex { get; private set; } = 0;
+    private Vector3 currentWaypoint;
     private float threshold = 0.1f;
 
     private float timer = 0.0f;
@@ -23,9 +24,7 @@ public class Germ : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currentWaypointIndex = 0;
         currentWaypoint = Path.Points[currentWaypointIndex];
-        transform.position = currentWaypoint;
     }
 
     // Update is called once per frame
@@ -43,11 +42,6 @@ public class Germ : MonoBehaviour
             currentWaypointIndex++;
             if (currentWaypointIndex >= Path.Points.Length)
             {
-                if (currentWaypointIndex == int.MaxValue)
-                    AntibodyManager.Instance.ChangeAntibodiesBy(currentAntibodiesAwarded);
-                else
-                    Debug.Log("Germ reached the end of the path");
-
                 GermManager.Instance.GermDied();
                 Destroy(gameObject);
                 return;
@@ -56,6 +50,18 @@ public class Germ : MonoBehaviour
         }
 
         transform.position = Vector3.MoveTowards(transform.position, currentWaypoint, currentSpeed * Time.deltaTime);
+    }
+
+    public void TakeDamage(float damage)
+    {
+        totalDamageTaken += damage;
+
+        if (totalDamageTaken >= currentHealth)
+        {
+            AntibodyManager.Instance.ChangeAntibodiesBy(currentAntibodiesAwarded);
+            GermManager.Instance.GermDied();
+            Destroy(gameObject);
+        }
     }
 
     private void OnEnable() => EffectsManager.Instance.onEffectsChange.AddListener(OnEffectsChange);

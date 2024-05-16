@@ -45,7 +45,14 @@ public class HealthManager : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        currentHealth = Mathf.Max(currentHealth - damage, 0);
+        currentHealth -= damage;
+
+        if (currentHealth <= 0.0f)
+        {
+            GameManager.Instance.GameOver();
+            currentHealth = 0.0f;
+        }
+
         healthText.text = Mathf.CeilToInt(currentHealth).ToString();
     }
 }

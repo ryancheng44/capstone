@@ -44,6 +44,9 @@ TagManager:
   - name: Path
     uniqueID: 3780241521
     locked: 0
+  - name: Projectiles
+    uniqueID: 4232937925
+    locked: 0
   - name: Germs
     uniqueID: 3867824253
     locked: 0

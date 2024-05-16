@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d3ef61ac8814ce2ab917078a15190e, type: 3}
   m_Name: Level 02
   m_EditorClassIdentifier: 
-  waves: []
+  waves:
+  - {fileID: 11400000, guid: 61f15535acd1946ae8956e780319bf2f, type: 2}
   operationsAllowed: 0000000001000000
   useNegatives: 0
   firstNumberDigits: 2
   secondNumberDigits: 1
-  time: 3
+  time: 5
   minEffect: 0.1
   maxEffect: 0.2
