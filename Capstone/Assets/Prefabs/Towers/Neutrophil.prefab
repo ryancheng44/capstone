@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1463041271752216311}
   - component: {fileID: 2292822371762397875}
   - component: {fileID: 5219500357840528547}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Neutrophil
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -161,12 +161,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a999242a7ac1462a87e3dad28dc5dc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <ProfilePic>k__BackingField: {fileID: -263130387, guid: 9d2f315aab06a4a7cbf0061dedd0d2b6, type: 3}
   germsLayer:
     serializedVersion: 2
     m_Bits: 8
-  <ProfilePic>k__BackingField: {fileID: -263130387, guid: 9d2f315aab06a4a7cbf0061dedd0d2b6, type: 3}
   projectilePrefab: {fileID: 5289313097835146024, guid: 9c495dd98949047caae47248d48d5a8c, type: 3}
-  attackRate: 0.3333333
   <Cost>k__BackingField: 400
-  damage: 3
-  range: 1
+  attackRate: 2
+  damage: 15
+  range: 2

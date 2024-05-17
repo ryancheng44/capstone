@@ -1,11 +1,14 @@
+// CLEARED
+
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    [SerializeField] private float speed;
     [SerializeField] private LayerMask germsLayer;
+    [SerializeField] private float speed;
     [SerializeField] private bool splash;
     [SerializeField] private float splashRange;
+
     private Transform target;
     private float damage;
 
@@ -44,7 +47,7 @@ public class Projectile : MonoBehaviour
         if (splash)
         {
             Collider2D[] colliders = Physics2D.OverlapCircleAll(target.position, splashRange, germsLayer);
-
+            
             foreach (Collider2D collider in colliders)
                 collider.GetComponent<Germ>().TakeDamage(damage);
         }

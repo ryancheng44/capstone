@@ -1,10 +1,12 @@
+// CLEARED
+
 using UnityEngine;
 using TMPro;
 
 public class AntibodyManager : MonoBehaviour
 {
     public static AntibodyManager Instance { get; private set; }
-    
+
     [SerializeField] private TextMeshProUGUI antibodyText;
     [SerializeField] private int startingAntibodies;
 

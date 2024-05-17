@@ -1,32 +1,36 @@
-using System.Collections.Generic;
-using TMPro;
+// CLEARED
+
 using UnityEngine;
+using TMPro;
 
 [RequireComponent(typeof(Animator))]
 public class Shop : MonoBehaviour
 {
-    public static Shop instance { get; private set; }
+    public static Shop Instance { get; private set; }
 
     [SerializeField] private Tower[] towerPrefabs;
     [SerializeField] private TowerButton towerButtonPrefab;
     [SerializeField] private Transform content;
+
     [SerializeField] private GameObject towerPlacementPanel;
     [SerializeField] private TMP_InputField xInputField;
     [SerializeField] private TMP_InputField yInputField;
     [SerializeField] private LayerMask offLimitsLayer;
 
-    private Animator animator;
-    private bool isHidden = false;
+    [SerializeField] private Transform rangeIndicator;
+    [SerializeField] private LayerMask towerLayer;
 
+    private Tower selectedTower = null;
     private Tower towerToPlace = null;
 
-    private Dictionary<string, float> effectsDict = new ();
+    private Animator animator;
+    private bool isHidden = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        if (instance == null)
-            instance = this;
+        if (Instance == null)
+            Instance = this;
         else
             Destroy(gameObject);
 
@@ -42,21 +46,53 @@ public class Shop : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T))
             Toggle();
 
+        if (Input.GetMouseButtonUp(0) && towerToPlace == null)
+        {
+            DeselectTower();
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity, towerLayer);
+
+            if (hit.collider != null)
+            {
+                selectedTower = hit.collider.GetComponent<Tower>();
+                selectedTower.GetComponent<SpriteRenderer>().color = Color.green;
+                ShowRangeIndicator(selectedTower);
+            }
+            
+            // TODO: Make clicking on UI not deselect the tower
+        }
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (towerToPlace != null)
             {
                 Destroy(towerToPlace.gameObject);
-                towerToPlace = null;
-                towerPlacementPanel.SetActive(false);
+                ClearTowerPlacementStuff();
             }
+            else
+                DeselectTower();
         }
     }
 
     private void OnEnable() => EffectsManager.Instance.onEffectsChange.AddListener(OnEffectsChange);
     private void OnDisable() => EffectsManager.Instance.onEffectsChange.RemoveListener(OnEffectsChange);
 
-    private void OnEffectsChange(Dictionary<string, float> effectsDict) => this.effectsDict = effectsDict;
+    private void DeselectTower()
+    {
+        if (selectedTower == null)
+            return;
+
+        selectedTower.GetComponent<SpriteRenderer>().color = Color.white;
+        selectedTower = null;
+        HideRangeIndicator();
+    }
+
+    private void OnEffectsChange()
+    {
+        if (towerToPlace != null || selectedTower != null)
+            ShowRangeIndicator(towerToPlace != null ? towerToPlace : selectedTower);
+    }
 
     public void Toggle()
     {
@@ -68,9 +104,11 @@ public class Shop : MonoBehaviour
     {
         if (towerToPlace != null)
             return;
-        
+
         towerToPlace = Instantiate(towerPrefab, Vector3.zero, Quaternion.identity);
         towerPlacementPanel.SetActive(true);
+
+        ShowRangeIndicator(towerToPlace);
     }
 
     public void UpdateTowerPosition()
@@ -92,18 +130,46 @@ public class Shop : MonoBehaviour
         if (towerToPlace.GetComponent<Collider2D>().IsTouchingLayers(offLimitsLayer))
         {
             Debug.Log("Can't place tower here");
+
+            // TODO: Show error message
+
             return;
         }
-    
+
         AntibodyManager.Instance.ChangeAntibodiesBy(-towerToPlace.Cost);
 
         towerToPlace.enabled = true;
-        towerToPlace.OnEffectsChange(effectsDict);
-        towerToPlace.GetComponent<SpriteRenderer>().color = Color.white;
+        ClearTowerPlacementStuff();
+    }
+
+    private void ClearTowerPlacementStuff()
+    {
         towerToPlace = null;
 
         xInputField.text = string.Empty;
         yInputField.text = string.Empty;
         towerPlacementPanel.SetActive(false);
+
+        HideRangeIndicator();
+    }
+
+    private void ShowRangeIndicator(Tower tower)
+    {
+        tower.OnEffectsChange();
+
+        Vector3 temp = rangeIndicator.localScale;
+        temp.x = tower.CurrentRange;
+        rangeIndicator.localScale = temp;
+
+        rangeIndicator.SetParent(tower.transform);
+        rangeIndicator.localPosition = Vector3.zero;
+
+        rangeIndicator.gameObject.SetActive(true);
+    }
+
+    private void HideRangeIndicator()
+    {
+        rangeIndicator.SetParent(null);
+        rangeIndicator.gameObject.SetActive(false);
     }
 }

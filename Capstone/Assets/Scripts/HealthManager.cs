@@ -1,4 +1,5 @@
-// Potentially allow maxHealth and healthRegen to be affected by Events and other things
+// Potentially allow healthRegen to be affected by Events and other things
+// CLEARED
 
 using UnityEngine;
 using TMPro;

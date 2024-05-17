@@ -1,3 +1,5 @@
+// CLEARED
+
 using UnityEngine;
 
 public enum FourBasicOperations
@@ -12,7 +14,7 @@ public enum FourBasicOperations
 public class Level : ScriptableObject
 {
     public Wave[] waves;
-    
+
     public FourBasicOperations[] operationsAllowed;
     public bool useNegatives;
     public int firstNumberDigits;

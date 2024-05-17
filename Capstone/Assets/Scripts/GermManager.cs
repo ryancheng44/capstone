@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+// CLEARED
+
 using UnityEngine;
 
 public class GermManager : MonoBehaviour
@@ -6,18 +7,16 @@ public class GermManager : MonoBehaviour
     public static GermManager Instance { get; private set; }
 
     private Level currentLevel;
+
     private int currentWaveIndex = 0;
     private Wave currentWave;
-
-    private Germ currentGerm;
     private int germsToSpawn = 0;
-    private int germsAlive = 0;
+    private Germ currentGerm;
     private float spawnRate;
     private float currentSpawnRate;
 
+    private int germsAlive = 0;
     private float timer = 0.0f;
-
-    private Dictionary<string, float> effectsDict = new ();
 
     // Start is called before the first frame update
     void Start()
@@ -33,16 +32,13 @@ public class GermManager : MonoBehaviour
 
     private void NewWave()
     {
-        if (currentWaveIndex >= currentLevel.waves.Length)
-            return;
-
         currentWave = currentLevel.waves[currentWaveIndex];
 
-        currentGerm = currentWave.germ;
         germsToSpawn = currentWave.count;
+        currentGerm = currentWave.germ;
         spawnRate = currentWave.spawnRate;
 
-        OnEffectsChange(effectsDict);
+        OnEffectsChange();
         currentWaveIndex++;
     }
 
@@ -51,13 +47,12 @@ public class GermManager : MonoBehaviour
     {
         if (timer <= 0.0f && germsToSpawn > 0)
         {
-            Germ germ = Instantiate(currentGerm, Path.Points[0], Quaternion.identity);
-            germ.OnEffectsChange(effectsDict);
+            Instantiate(currentGerm, Path.Points[0], Quaternion.identity);
 
             germsAlive++;
             germsToSpawn--;
 
-            if (germsToSpawn <= 0)
+            if (germsToSpawn <= 0 && currentWaveIndex < currentLevel.waves.Length)
             {
                 NewWave();
                 timer = 1f;
@@ -68,21 +63,17 @@ public class GermManager : MonoBehaviour
         else
             timer -= Time.deltaTime;
     }
-    
+
     private void OnEnable() => EffectsManager.Instance.onEffectsChange.AddListener(OnEffectsChange);
     private void OnDisable() => EffectsManager.Instance.onEffectsChange.RemoveListener(OnEffectsChange);
 
-    private void OnEffectsChange(Dictionary<string, float> effectsDict)
-    {
-        currentSpawnRate = spawnRate * (1.0f + effectsDict["Germ Spawn Rate"]);
-        this.effectsDict = effectsDict;
-    }
+    private void OnEffectsChange() => currentSpawnRate = spawnRate * (1.0f + EffectsManager.Instance.effectsDict["Germ Spawn Rate"]);
 
     public void GermDied()
     {
         germsAlive--;
 
-        if (germsAlive <= 0 && currentWaveIndex >= currentLevel.waves.Length)
+        if (currentWaveIndex >= currentLevel.waves.Length && germsToSpawn <= 0 && germsAlive <= 0)
             GameManager.Instance.LevelComplete();
     }
 }

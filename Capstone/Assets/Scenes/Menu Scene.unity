@@ -160,7 +160,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 0000000071e851e1c5814dfc7d508ae6a1777b95
+  m_ApplyToSortingLayers: 0000000071e851e1c5814dfc7d508ae6a1777b9509e03f34
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -237,8 +237,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 630302672}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.7082416}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1182,7 +1182,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &594308792
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1585,7 +1585,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &749924389
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1963,7 +1963,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 220781823}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.29175845
+  m_Size: 0.28497264
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2119,7 +2119,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -50, y: 0}
-  m_SizeDelta: {x: -100, y: 2460.94}
+  m_SizeDelta: {x: -100, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1046175417
 MonoBehaviour:
@@ -2141,35 +2141,27 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u201COperation Antibody\u201D is a tower defense game.\n\nThe bad guys
-    are germs and the good guys are immune system cells.\n\nThere are two things
-    to keep your eyes on: your health, and your antibody balance. Both are displayed
-    at the top left corner of the screen.\n\nGerms decrease your health by a certain
-    amount (varies from germ to germ) every second it is in your body (on the screen).
-    This means that faster germs are actually and contrarily better than slow ones
-    because they leave your body faster and thus have less time to deal damage. If
-    your health drops to 0 at any point, you lose! Thankfully, your health regenerates
-    by 1 second.\n\nGerms also give you a certain amount (varies from germ to germ)
-    of antibodies when killed by an immune system cell. Antibodies are what you use
-    to purchase and upgrade immune system cells. Beware though: if you spend more
-    than you have and your antibody balance goes negative, germs will get stronger
-    and your immune system cells will get weaker! The more negative your balance,
-    the worse the effects. You can remove these effects by returning to a neutral
-    or positive balance.\n\nYou can purchase immune system cells from the shop on
-    the right side of your screen and place them using Cartesian coordinates, although
-    you can\u2019t place them on the path or on another immune system cell. Click
-    on a placed immune system cell to upgrade or sell it, or just to see what its
-    range is. Speaking of range, it is hinted at by the red line which extends outward
-    from the middle of a selected immune system cell. The length of this line is
-    the radius of the circle within which the immune system cell can operate.\n\nOccasionally,
-    events will pop up, testing your math skills. Answering an event\u2019s question
-    correctly will make germs weaker or your immune system cells stronger. You have
-    unlimited tries to answer correctly, but beware: time\u2019s ticking! If you
-    run out of time, germs will become stronger or your immune system cells will
-    become weaker.\n\nEach level offers a different type of math problem in its events,
-    such as one-digit by one-digit multiplication and division without negatives
-    or two-digit by one-digit addition and subtraction with negatives. The type of
-    math problem becomes increasingly complex as you progress through the levels."
+  m_text: "Operation Antibody is a tower defense game. Place towers (immune system
+    cells) to kill invading germs. Manage your health and antibody balance to survive
+    and thrive. Do math to boost your towers and weaken invaders.\n\nDO:\n- Monitor
+    your health and antibody balance at the top left of your screen.\n- Kill germs
+    to gain antibodies.\n- Purchase towers using antibodies from the shop on the
+    right side of your screen.\n- Place towers using Cartesian coordinates (can\u2019t
+    place on path or other towers).\n- Answer pop-up math problems correctly to strengthen
+    your defenses and weaken enemies. (Unlimited tries, but don\u2019t run out of
+    time!)\n\nAVOID:\n- Letting your health drop to 0 \u2192 GAME OVER!\n- Spending
+    more antibodies than you have \u2192 will weaken your defenses and strengthen
+    enemies\n- Letting time run out in math events \u2192 will also weaken your defenses
+    and strengthen enemies (unlimited tries and no incorrect penalty, so give everything
+    a shot!)\n\nACHIEVE:\n- Effective immune system defense.\n- Practice math skills.\n\nGameplay
+    Overview:\n\nHealth: Decreases each second a germ is in your body (on screen).
+    Health regenerates by 1 per second.\n\nAntibodies: Earned by killing germs. Used
+    to buy and upgrade towers. Avoid a negative balance to prevent stronger germs
+    and weaker towers.\n\nTowers (immune system cells): Purchased from the shop,
+    placed strategically, upgraded, or sold. Range indicated by a red line from the
+    tower\u2019s center.\n\nEvents: Math challenges with different problem types
+    per level. Correct answers weaken germs or strengthen towers. Time constraints
+    apply.\n\nStay vigilant, plan strategically, and keep your immune defenses strong!"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1ca6c657a68224c4dbc9adb8eced37ec, type: 2}
   m_sharedMaterial: {fileID: 3174439730220877651, guid: 1ca6c657a68224c4dbc9adb8eced37ec, type: 2}

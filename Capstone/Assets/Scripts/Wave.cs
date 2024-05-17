@@ -1,3 +1,5 @@
+// CLEARED
+
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Wave", menuName = "Wave")]

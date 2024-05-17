@@ -1,3 +1,5 @@
+// CLEARED
+
 using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]

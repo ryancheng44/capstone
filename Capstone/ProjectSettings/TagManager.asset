@@ -11,8 +11,8 @@ TagManager:
   - Germs
   - Water
   - UI
-  - Off Limits
-  - 
+  - Path
+  - Tower
   - 
   - 
   - 
@@ -52,4 +52,7 @@ TagManager:
     locked: 0
   - name: Towers
     uniqueID: 2507896737
+    locked: 0
+  - name: UI
+    uniqueID: 876601353
     locked: 0

@@ -1,3 +1,5 @@
+// CLEARED
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -20,11 +22,7 @@ public class MenuManager : MonoBehaviour
     }
 
     public void CreateLevelButton(int levelIndex) => Instantiate(levelButtonPrefab, content.transform).Init(levelIndex);
-
-    public void StartGame()
-    {
-        SceneManager.LoadScene("Game Scene");
-    }
+    public void StartGame() => SceneManager.LoadScene("Game Scene");
 
     public void LevelSelect()
     {

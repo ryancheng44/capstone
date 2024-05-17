@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1287340378127753260}
   - component: {fileID: 6747915302112132210}
   - component: {fileID: 852405667690194959}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: B Cell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -119,9 +119,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.02, y: 0}
   serializedVersion: 2
-  m_Radius: 0.44458008
+  m_Radius: 0.43
 --- !u!50 &6747915302112132210
 Rigidbody2D:
   serializedVersion: 4
@@ -161,12 +161,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a999242a7ac1462a87e3dad28dc5dc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <ProfilePic>k__BackingField: {fileID: -1490188816, guid: 9028f64de5e48491c9ccce28e9aff9ea, type: 3}
   germsLayer:
     serializedVersion: 2
     m_Bits: 8
-  <ProfilePic>k__BackingField: {fileID: -1490188816, guid: 9028f64de5e48491c9ccce28e9aff9ea, type: 3}
-  projectilePrefab: {fileID: 0}
-  attackRate: 0
-  <Cost>k__BackingField: 500
-  damage: 0
-  range: 0
+  projectilePrefab: {fileID: 5289313097835146024, guid: 65d9c5ac620a44eb3a1e2bd9de7d4dd4, type: 3}
+  <Cost>k__BackingField: 550
+  attackRate: 1
+  damage: 35
+  range: 3

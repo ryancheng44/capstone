@@ -1,3 +1,5 @@
+// CLEARED
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -5,10 +7,10 @@ using UnityEngine.Events;
 public class EffectsManager : MonoBehaviour
 {
     public static EffectsManager Instance { get; private set; }
-    [HideInInspector] public UnityEvent<Dictionary<string, float>> onEffectsChange;
-    private Dictionary<string, float> effectsDict;
+    [HideInInspector] public UnityEvent onEffectsChange;
+    public Dictionary<string, float> effectsDict { get; private set; } = new ();
 
-    private Dictionary<string, float> previousEffectsDict = new ();
+    private Dictionary<string, float> previousEffectsDict = new();
     private float previousEffect = 0.0f;
 
     private void Awake()
@@ -18,7 +20,7 @@ public class EffectsManager : MonoBehaviour
         else
             Destroy(gameObject);
 
-        effectsDict = new ()
+        effectsDict = new()
         {
             { "Germ Antibodies Awarded", 0.0f },
             { "Germ Damage Per Second", 0.0f },
@@ -32,7 +34,7 @@ public class EffectsManager : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start() => onEffectsChange.Invoke(effectsDict);
+    void Start() => onEffectsChange.Invoke();
 
     public void OnAntibodiesChange(float effect)
     {
@@ -47,10 +49,11 @@ public class EffectsManager : MonoBehaviour
         effectsDict["Tower Damage"] += effect;
         effectsDict["Tower Range"] += effect;
 
-        onEffectsChange.Invoke(effectsDict);
+        onEffectsChange.Invoke();
         previousEffect = effect;
     }
 
+    // Can potentially DRY out
     private void RemovePreviousEffect()
     {
         effectsDict["Germ Antibodies Awarded"] -= previousEffect;
@@ -68,7 +71,7 @@ public class EffectsManager : MonoBehaviour
         foreach (var key in effectsDict.Keys)
             this.effectsDict[key] += effectsDict[key];
 
-        onEffectsChange.Invoke(this.effectsDict);
+        onEffectsChange.Invoke();
         previousEffectsDict = effectsDict;
     }
 
@@ -79,7 +82,7 @@ public class EffectsManager : MonoBehaviour
 
         foreach (var key in new List<string>(effectsDict.Keys))
             effectsDict[key] -= previousEffectsDict[key];
-        
-        onEffectsChange.Invoke(effectsDict);
+
+        onEffectsChange.Invoke();
     }
 }

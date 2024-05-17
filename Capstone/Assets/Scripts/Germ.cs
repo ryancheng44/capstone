@@ -1,9 +1,11 @@
-using System.Collections.Generic;
+// CLEARED
+
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Germ : MonoBehaviour
 {
-    [Header("Stats")]
+    [SerializeField] private Scrollbar healthBar;
     [SerializeField] private int antibodiesAwarded;
     [SerializeField] private float damagePerSecond;
     [SerializeField] private float health;
@@ -13,18 +15,21 @@ public class Germ : MonoBehaviour
     private float currentDamagePerSecond;
     private float currentHealth;
     private float currentSpeed;
-    private float totalDamageTaken = 0.0f;
 
-    public int currentWaypointIndex { get; private set; } = 0;
+    public int currentWaypointIndex { get; private set; }
     private Vector3 currentWaypoint;
-    private float threshold = 0.1f;
 
+    private float totalDamageTaken = 0.0f;
+    private bool isDead = false;
     private float timer = 0.0f;
 
     // Start is called before the first frame update
     void Start()
     {
+        currentWaypointIndex = 0;
         currentWaypoint = Path.Points[currentWaypointIndex];
+
+        OnEffectsChange();
     }
 
     // Update is called once per frame
@@ -37,8 +42,13 @@ public class Germ : MonoBehaviour
             timer = 0.0f;
         }
 
-        if (Vector3.Distance(transform.position, currentWaypoint) < threshold)
+        Vector3 direction = currentWaypoint - transform.position;
+        float distanceThisFrame = currentSpeed * Time.deltaTime;
+
+        if (direction.magnitude <= distanceThisFrame)
         {
+            transform.position = currentWaypoint;
+
             currentWaypointIndex++;
             if (currentWaypointIndex >= Path.Points.Length)
             {
@@ -48,30 +58,36 @@ public class Germ : MonoBehaviour
             }
             currentWaypoint = Path.Points[currentWaypointIndex];
         }
-
-        transform.position = Vector3.MoveTowards(transform.position, currentWaypoint, currentSpeed * Time.deltaTime);
+        else
+            transform.position += direction.normalized * distanceThisFrame;
     }
 
     public void TakeDamage(float damage)
     {
         totalDamageTaken += damage;
 
-        if (totalDamageTaken >= currentHealth)
+        if (totalDamageTaken >= currentHealth && !isDead)
         {
+            isDead = true;
             AntibodyManager.Instance.ChangeAntibodiesBy(currentAntibodiesAwarded);
             GermManager.Instance.GermDied();
             Destroy(gameObject);
+            return;
         }
+
+        healthBar.size = 1.0f - (totalDamageTaken / currentHealth);
     }
 
     private void OnEnable() => EffectsManager.Instance.onEffectsChange.AddListener(OnEffectsChange);
     private void OnDisable() => EffectsManager.Instance.onEffectsChange.RemoveListener(OnEffectsChange);
 
-    public void OnEffectsChange(Dictionary<string, float> effectsDict)
+    private void OnEffectsChange()
     {
-        currentAntibodiesAwarded = (int)(antibodiesAwarded * (1.0f + effectsDict["Germ Antibodies Awarded"]));
-        currentDamagePerSecond = damagePerSecond * (1.0f + effectsDict["Germ Damage Per Second"]);
-        currentHealth = health * (1.0f + effectsDict["Germ Health"]);
-        currentSpeed = speed * (1.0f + effectsDict["Germ Speed"]);
+        currentAntibodiesAwarded = (int)(antibodiesAwarded * (1.0f + EffectsManager.Instance.effectsDict["Germ Antibodies Awarded"]));
+        currentDamagePerSecond = damagePerSecond * (1.0f + EffectsManager.Instance.effectsDict["Germ Damage Per Second"]);
+        currentHealth = health * (1.0f + EffectsManager.Instance.effectsDict["Germ Health"]);
+        currentSpeed = speed * (1.0f + EffectsManager.Instance.effectsDict["Germ Speed"]);
+
+        TakeDamage(0.0f);
     }
 }

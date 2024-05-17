@@ -1,3 +1,5 @@
+// CLEARED
+
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,12 +17,12 @@ public class EventManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI eventNameText;
     [SerializeField] private TextMeshProUGUI timeText;
 
-    [SerializeField] private GameObject problem;
+    [SerializeField] private GameObject problemPanel;
     [SerializeField] private TextMeshProUGUI firstNumberText;
     [SerializeField] private Image operationImage;
     [SerializeField] private TextMeshProUGUI secondNumberText;
     [SerializeField] private TMP_InputField answerInputField;
-    
+
     [SerializeField] private TextMeshProUGUI resultText;
     [SerializeField] private TextMeshProUGUI germAntibodiesAwardedEffectText;
     [SerializeField] private TextMeshProUGUI germDamagePerSecondEffectText;
@@ -34,8 +36,8 @@ public class EventManager : MonoBehaviour
     [SerializeField] private float minTimeBetweenEvents;
     [SerializeField] private float maxTimeBetweenEvents;
 
-    private Dictionary<string, Sprite> operationSpritesDict = new ();
-    
+    private Dictionary<string, Sprite> operationSpritesDict = new();
+
     private Level currentLevel;
     private Event currentEvent;
 
@@ -53,12 +55,12 @@ public class EventManager : MonoBehaviour
         else
             Destroy(gameObject);
 
-        timeSinceLastEvent = Random.Range(minTimeBetweenEvents, maxTimeBetweenEvents);
+        currentLevel = LevelManager.Instance.currentLevel;
 
         foreach (Sprite sprite in operationSprites)
             operationSpritesDict.Add(sprite.name, sprite);
 
-        currentLevel = LevelManager.Instance.currentLevel;
+        timeSinceLastEvent = Random.Range(minTimeBetweenEvents, maxTimeBetweenEvents);
     }
 
     // Update is called once per frame
@@ -67,9 +69,7 @@ public class EventManager : MonoBehaviour
         if (eventActive)
         {
             if (timeToAnswer <= 0.0f)
-            {
                 HandleEventConclusion(false);
-            }
             else
             {
                 timeToAnswer -= Time.deltaTime;
@@ -97,7 +97,7 @@ public class EventManager : MonoBehaviour
             HandleEventConclusion(true);
         else
             Debug.Log("Incorrect!");
-        
+
         // TODO: Incorrect animation
     }
 
@@ -106,9 +106,9 @@ public class EventManager : MonoBehaviour
         eventActive = false;
         timeSinceLastEvent = float.MaxValue;
 
-        resultText.text = "Due to " + (success ? currentEvent.successDescription : currentEvent.failureDescription) + ", the following effects have been applied until the next event:"; 
+        resultText.text = "Due to " + (success ? currentEvent.successDescription : currentEvent.failureDescription) + ", the following effects have been applied until the next event:";
 
-        Dictionary<string, float> effectsDict = new ();
+        Dictionary<string, float> effectsDict = new();
 
         void AddEffectIfAffecting(bool affecting, string key, TextMeshProUGUI text, bool invert = false)
         {
@@ -117,6 +117,7 @@ public class EventManager : MonoBehaviour
                 int temp = (int)(Random.Range(currentLevel.minEffect, currentLevel.maxEffect) * ((invert ? !success : success) ? 1.0f : -1.0f) * 100.0f);
                 float effect = temp / 100.0f;
                 effectsDict.Add(key, effect);
+
                 text.text = key + ": " + (effect > 0.0f ? "+" : "") + effect * 100 + "%";
                 text.gameObject.SetActive(true);
             }
@@ -138,8 +139,8 @@ public class EventManager : MonoBehaviour
 
         EffectsManager.Instance.OnEventConclusion(effectsDict);
 
+        problemPanel.SetActive(false);
         resultText.gameObject.SetActive(true);
-        problem.SetActive(false);
 
         Invoke("CloseEvent", 5.0f);
     }
@@ -147,12 +148,12 @@ public class EventManager : MonoBehaviour
     private void CloseEvent()
     {
         resultText.gameObject.SetActive(false);
-        
+
         answerInputField.text = string.Empty;
-        problem.SetActive(true);
-        
+        problemPanel.SetActive(true);
+
         eventPanel.SetActive(false);
-        
+
         timeSinceLastEvent = Random.Range(minTimeBetweenEvents, maxTimeBetweenEvents);
     }
 
@@ -173,7 +174,7 @@ public class EventManager : MonoBehaviour
             minFirstNumber = 0;
         else
             minFirstNumber = (int)Mathf.Pow(10, currentLevel.firstNumberDigits - 1);
-        
+
         int maxFirstNumber = (int)Mathf.Pow(10, currentLevel.firstNumberDigits);
         int firstNumber = Random.Range(minFirstNumber, maxFirstNumber);
 
@@ -196,7 +197,8 @@ public class EventManager : MonoBehaviour
                 if (Random.Range(0, 2) == 0)
                     secondNumber *= -1;
             }
-            else {
+            else
+            {
                 secondNumber *= -1;
 
                 if (Random.Range(0, 2) == 0)
