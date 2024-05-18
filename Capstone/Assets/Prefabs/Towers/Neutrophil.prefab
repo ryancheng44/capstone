@@ -166,7 +166,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   projectilePrefab: {fileID: 5289313097835146024, guid: 9c495dd98949047caae47248d48d5a8c, type: 3}
+  <TowerName>k__BackingField: Neutrophil
   <Cost>k__BackingField: 400
   attackRate: 2
   damage: 15
   range: 2
+  <UpgradeCost>k__BackingField: 175
+  upgradeEffect: 0.5

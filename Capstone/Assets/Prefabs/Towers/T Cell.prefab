@@ -166,7 +166,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   projectilePrefab: {fileID: 5289313097835146024, guid: bbd2bcb6dd1f34d5dbfed84879a811d4, type: 3}
+  <TowerName>k__BackingField: T Cell
   <Cost>k__BackingField: 700
   attackRate: 0.75
   damage: 50
   range: 5
+  <UpgradeCost>k__BackingField: 325
+  upgradeEffect: 0.5

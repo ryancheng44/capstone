@@ -18,6 +18,11 @@ public class Shop : MonoBehaviour
     [SerializeField] private LayerMask offLimitsLayer;
 
     [SerializeField] private Transform rangeIndicator;
+    [SerializeField] private Transform towerCanvas;
+    [SerializeField] private float towerCanvasOffset;
+    [SerializeField] private TextMeshProUGUI towerNameText;
+    [SerializeField] private TextMeshProUGUI towerSellValueText;
+    [SerializeField] private TextMeshProUGUI towerUpgradeCostText;
     [SerializeField] private LayerMask towerLayer;
 
     private Tower selectedTower = null;
@@ -57,6 +62,7 @@ public class Shop : MonoBehaviour
             {
                 selectedTower = hit.collider.GetComponent<Tower>();
                 selectedTower.GetComponent<SpriteRenderer>().color = Color.green;
+                ShowOptions();
                 ShowRangeIndicator(selectedTower);
             }
             
@@ -86,12 +92,50 @@ public class Shop : MonoBehaviour
         selectedTower.GetComponent<SpriteRenderer>().color = Color.white;
         selectedTower = null;
         HideRangeIndicator();
+        HideOptions();
     }
 
     private void OnEffectsChange()
     {
         if (towerToPlace != null || selectedTower != null)
             ShowRangeIndicator(towerToPlace != null ? towerToPlace : selectedTower);
+    }
+
+    public void ShowOptions()
+    {
+        towerCanvas.SetParent(selectedTower.transform);
+        towerCanvas.localPosition = new Vector3(0f, towerCanvasOffset, 0f);
+
+        towerNameText.text = selectedTower.TowerName;
+        towerSellValueText.text = selectedTower.SellValue.ToString();
+        if (selectedTower.HasBeenUpgraded)
+            towerUpgradeCostText.text = "MAX";
+        else
+            towerUpgradeCostText.text = selectedTower.UpgradeCost.ToString();
+
+        towerCanvas.gameObject.SetActive(true);
+    }
+
+    public void HideOptions()
+    {
+        towerCanvas.SetParent(null);
+        towerCanvas.gameObject.SetActive(false);
+    }
+
+    public void UpgradeTower()
+    {
+        if (selectedTower.HasBeenUpgraded)
+            return;
+
+        selectedTower.Upgrade();
+    }
+
+    public void SellTower()
+    {
+        HideOptions();
+        HideRangeIndicator();
+        selectedTower.Sell();
+        DeselectTower();
     }
 
     public void Toggle()
@@ -103,7 +147,10 @@ public class Shop : MonoBehaviour
     public void SpawnTower(Tower towerPrefab)
     {
         if (towerToPlace != null)
-            return;
+        {
+            Destroy(towerToPlace.gameObject);
+            ClearTowerPlacementStuff();
+        }
 
         towerToPlace = Instantiate(towerPrefab, Vector3.zero, Quaternion.identity);
         towerPlacementPanel.SetActive(true);

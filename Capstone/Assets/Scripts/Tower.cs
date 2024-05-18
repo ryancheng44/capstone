@@ -7,11 +7,17 @@ public class Tower : MonoBehaviour
     [field: SerializeField] public Sprite ProfilePic { get; private set; }
     [SerializeField] private LayerMask germsLayer;
     [SerializeField] private Projectile projectilePrefab;
+    [field: SerializeField] public string TowerName { get; private set; }
 
     [field: SerializeField] public int Cost { get; private set; }
     [SerializeField] private float attackRate;
     [SerializeField] private float damage;
     [SerializeField] private float range;
+
+    [field: SerializeField] public int UpgradeCost { get; private set; }
+    [SerializeField] private float upgradeEffect;
+    public int SellValue { get; private set; }
+    public bool HasBeenUpgraded { get; private set; } = false;
 
     private float currentAttackRate;
     private float currentDamage;
@@ -20,7 +26,11 @@ public class Tower : MonoBehaviour
     private float timer = 0.0f;
 
     // Start is called before the first frame update
-    void Start() => GetComponent<SpriteRenderer>().color = Color.white;
+    void Start()
+    {
+        GetComponent<SpriteRenderer>().color = Color.white;
+        SellValue = Cost / 2;
+    }
 
     // Update is called once per frame
     void Update()
@@ -76,5 +86,25 @@ public class Tower : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, CurrentRange);
+    }
+
+    public void Upgrade()
+    {
+        if (HasBeenUpgraded)
+            return;
+
+        AntibodyManager.Instance.ChangeAntibodiesBy(-UpgradeCost);
+        HasBeenUpgraded = true;
+        SellValue += UpgradeCost / 2;
+        attackRate *= 1 + upgradeEffect;
+        damage *= 1 + upgradeEffect;
+        range *= 1 + upgradeEffect;
+        OnEffectsChange();
+    }
+
+    public void Sell()
+    {
+        AntibodyManager.Instance.ChangeAntibodiesBy(SellValue);
+        Destroy(gameObject);
     }
 }
