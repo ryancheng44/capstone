@@ -8,7 +8,7 @@ public class GermManager : MonoBehaviour
 
     private Level currentLevel;
 
-    private int currentWaveIndex = 0;
+    private int currentWaveIndex = -1;
     private Wave currentWave;
     private int germsToSpawn = 0;
     private Germ currentGerm;
@@ -26,20 +26,19 @@ public class GermManager : MonoBehaviour
         else
             Destroy(gameObject);
 
-        currentLevel = LevelManager.Instance.currentLevel;
+        currentLevel = LevelManager.Instance.CurrentLevel;
         NewWave();
     }
 
     private void NewWave()
     {
+        currentWaveIndex++;
         currentWave = currentLevel.waves[currentWaveIndex];
-
         germsToSpawn = currentWave.count;
         currentGerm = currentWave.germ;
         spawnRate = currentWave.spawnRate;
 
         OnEffectsChange();
-        currentWaveIndex++;
     }
 
     // Update is called once per frame
@@ -52,7 +51,7 @@ public class GermManager : MonoBehaviour
             germsAlive++;
             germsToSpawn--;
 
-            if (germsToSpawn <= 0 && currentWaveIndex < currentLevel.waves.Length)
+            if (germsToSpawn <= 0 && currentWaveIndex < currentLevel.waves.Length - 1)
             {
                 NewWave();
                 timer = 1f;
@@ -73,7 +72,7 @@ public class GermManager : MonoBehaviour
     {
         germsAlive--;
 
-        if (currentWaveIndex >= currentLevel.waves.Length && germsToSpawn <= 0 && germsAlive <= 0)
+        if (currentWaveIndex >= currentLevel.waves.Length - 1 && germsToSpawn <= 0 && germsAlive <= 0)
             GameManager.Instance.LevelComplete();
     }
 }

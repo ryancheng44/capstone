@@ -62,7 +62,7 @@ public class Tower : MonoBehaviour
 
         foreach (Collider2D collider in colliders)
         {
-            int currentWaypointIndex = collider.GetComponent<Germ>().currentWaypointIndex;
+            int currentWaypointIndex = collider.GetComponent<Germ>().CurrentWaypointIndex;
 
             if (currentWaypointIndex > furthestWaypointIndex)
             {

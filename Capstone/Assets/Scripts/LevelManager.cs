@@ -11,7 +11,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private Level[] levels;
 
     private int currentLevelIndex = 0;
-    public Level currentLevel { get; private set; }
+    public Level CurrentLevel { get; private set; }
 
     // Start is called before the first frame update
     void Start()
@@ -31,7 +31,7 @@ public class LevelManager : MonoBehaviour
             MenuManager.Instance.CreateLevelButton(i);
         }
 
-        currentLevel = levels[currentLevelIndex];
+        CurrentLevel = levels[currentLevelIndex];
     }
 
     public void NextLevel()
@@ -44,12 +44,12 @@ public class LevelManager : MonoBehaviour
             return;
         }
 
-        currentLevel = levels[currentLevelIndex];
+        CurrentLevel = levels[currentLevelIndex];
     }
 
     public void SelectLevel(int levelIndex)
     {
         currentLevelIndex = levelIndex;
-        currentLevel = levels[levelIndex];
+        CurrentLevel = levels[levelIndex];
     }
 }

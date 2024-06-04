@@ -6,7 +6,7 @@ using TMPro;
 
 public class HealthManager : MonoBehaviour
 {
-    public static HealthManager instance { get; private set; }
+    public static HealthManager Instance { get; private set; }
 
     [SerializeField] private TextMeshProUGUI healthText;
     [SerializeField] private TextMeshProUGUI healthRegenText;
@@ -20,14 +20,14 @@ public class HealthManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (instance == null)
-            instance = this;
+        if (Instance == null)
+            Instance = this;
         else
             Destroy(gameObject);
 
         currentHealth = maxHealth;
         healthText.text = currentHealth.ToString();
-        healthRegenText.text = healthRegen.ToString();
+        healthRegenText.text = "+" + healthRegen.ToString();
     }
 
     // Update is called once per frame

@@ -36,7 +36,7 @@ public class EventManager : MonoBehaviour
     [SerializeField] private float minTimeBetweenEvents;
     [SerializeField] private float maxTimeBetweenEvents;
 
-    private Dictionary<string, Sprite> operationSpritesDict = new();
+    private readonly Dictionary<string, Sprite> operationSpritesDict = new();
 
     private Level currentLevel;
     private Event currentEvent;
@@ -45,7 +45,7 @@ public class EventManager : MonoBehaviour
     private float timeToAnswer = 0.0f;
 
     private bool eventActive = false;
-    private int correctAnswer;
+    private string correctAnswer;
 
     // Start is called before the first frame update
     void Start()
@@ -55,7 +55,7 @@ public class EventManager : MonoBehaviour
         else
             Destroy(gameObject);
 
-        currentLevel = LevelManager.Instance.currentLevel;
+        currentLevel = LevelManager.Instance.CurrentLevel;
 
         foreach (Sprite sprite in operationSprites)
             operationSpritesDict.Add(sprite.name, sprite);
@@ -93,7 +93,7 @@ public class EventManager : MonoBehaviour
 
     public void SubmitAnswer()
     {
-        if (answerInputField.text == correctAnswer.ToString())
+        if (answerInputField.text == correctAnswer)
             HandleEventConclusion(true);
         else
             Debug.Log("Incorrect!");
@@ -142,7 +142,7 @@ public class EventManager : MonoBehaviour
         problemPanel.SetActive(false);
         resultText.gameObject.SetActive(true);
 
-        Invoke("CloseEvent", 5.0f);
+        Invoke(nameof(CloseEvent), 5.0f);
     }
 
     private void CloseEvent()
@@ -209,18 +209,18 @@ public class EventManager : MonoBehaviour
         switch (operation)
         {
             case FourBasicOperations.Addition:
-                correctAnswer = firstNumber + secondNumber;
+                correctAnswer = (firstNumber + secondNumber).ToString();
                 operationImage.sprite = operationSpritesDict["Addition"];
                 break;
             case FourBasicOperations.Multiplication:
-                correctAnswer = firstNumber * secondNumber;
+                correctAnswer = (firstNumber * secondNumber).ToString();
                 operationImage.sprite = operationSpritesDict["Multiplication"];
                 break;
             case FourBasicOperations.Subtraction:
                 if (!currentLevel.useNegatives && firstNumber < secondNumber)
                     secondNumber = Random.Range(minSecondNumber, firstNumber + 1);
 
-                correctAnswer = firstNumber - secondNumber;
+                correctAnswer = (firstNumber - secondNumber).ToString();
                 operationImage.sprite = operationSpritesDict["Subtraction"];
                 break;
             case FourBasicOperations.Division:
@@ -239,7 +239,7 @@ public class EventManager : MonoBehaviour
                         secondNumber = factors[Random.Range(0, factors.Count)];
                 }
 
-                correctAnswer = firstNumber / secondNumber;
+                correctAnswer = (firstNumber / secondNumber).ToString();
                 operationImage.sprite = operationSpritesDict["Division"];
                 break;
         }
@@ -252,7 +252,7 @@ public class EventManager : MonoBehaviour
 
     private List<int> FindFactors(int n)
     {
-        List<int> factors = new List<int>();
+        List<int> factors = new();
 
         int sqrt = (int)Mathf.Sqrt(n);
         for (int i = 1; i <= sqrt; i++)

@@ -16,19 +16,18 @@ public class Germ : MonoBehaviour
     private float currentHealth;
     private float currentSpeed;
 
-    public int currentWaypointIndex { get; private set; }
+    public int CurrentWaypointIndex { get; private set; } = 1;
     private Vector3 currentWaypoint;
 
     private float totalDamageTaken = 0.0f;
     private bool isDead = false;
+
     private float timer = 0.0f;
 
     // Start is called before the first frame update
     void Start()
     {
-        currentWaypointIndex = 0;
-        currentWaypoint = Path.Points[currentWaypointIndex];
-
+        currentWaypoint = Path.Points[CurrentWaypointIndex];
         OnEffectsChange();
     }
 
@@ -38,7 +37,7 @@ public class Germ : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= 1.0f)
         {
-            HealthManager.instance.TakeDamage(currentDamagePerSecond);
+            HealthManager.Instance.TakeDamage(currentDamagePerSecond);
             timer = 0.0f;
         }
 
@@ -49,14 +48,14 @@ public class Germ : MonoBehaviour
         {
             transform.position = currentWaypoint;
 
-            currentWaypointIndex++;
-            if (currentWaypointIndex >= Path.Points.Length)
+            CurrentWaypointIndex++;
+            if (CurrentWaypointIndex >= Path.Points.Length)
             {
                 GermManager.Instance.GermDied();
                 Destroy(gameObject);
                 return;
             }
-            currentWaypoint = Path.Points[currentWaypointIndex];
+            currentWaypoint = Path.Points[CurrentWaypointIndex];
         }
         else
             transform.position += direction.normalized * distanceThisFrame;
