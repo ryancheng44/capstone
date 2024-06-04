@@ -77,9 +77,9 @@ public class Tower : MonoBehaviour
 
     public void OnEffectsChange()
     {
-        currentAttackRate = attackRate * (1.0f + EffectsManager.Instance.effectsDict["Tower Attack Rate"]);
-        currentDamage = damage * (1.0f + EffectsManager.Instance.effectsDict["Tower Damage"]);
-        CurrentRange = range * (1.0f + EffectsManager.Instance.effectsDict["Tower Range"]);
+        currentAttackRate = attackRate * (1.0f + EffectsManager.Instance.Effects["Tower Attack Rate"]);
+        currentDamage = damage * (1.0f + EffectsManager.Instance.Effects["Tower Damage"]);
+        CurrentRange = range * (1.0f + EffectsManager.Instance.Effects["Tower Range"]);
     }
 
     private void OnDrawGizmosSelected()

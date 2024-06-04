@@ -67,7 +67,7 @@ public class GermManager : MonoBehaviour
     private void OnEnable() => EffectsManager.Instance.onEffectsChange.AddListener(OnEffectsChange);
     private void OnDisable() => EffectsManager.Instance.onEffectsChange.RemoveListener(OnEffectsChange);
 
-    private void OnEffectsChange() => currentSpawnRate = spawnRate * (1.0f + EffectsManager.Instance.effectsDict["Germ Spawn Rate"]);
+    private void OnEffectsChange() => currentSpawnRate = spawnRate * (1.0f + EffectsManager.Instance.Effects["Germ Spawn Rate"]);
 
     public void GermDied()
     {

@@ -8,10 +8,10 @@ public class EffectsManager : MonoBehaviour
 {
     public static EffectsManager Instance { get; private set; }
     [HideInInspector] public UnityEvent onEffectsChange;
-    public Dictionary<string, float> effectsDict { get; private set; } = new ();
+    public Dictionary<string, float> Effects { get; private set; } = new();
 
-    private Dictionary<string, float> previousEffectsDict = new();
-    private float previousEffect = 0.0f;
+    private Dictionary<string, float> eventEffects = new();
+    private Dictionary<string, float> antibodyEffects = new();
 
     private void Awake()
     {
@@ -19,8 +19,12 @@ public class EffectsManager : MonoBehaviour
             Instance = this;
         else
             Destroy(gameObject);
+    }
 
-        effectsDict = new()
+    // Start is called before the first frame update
+    void Start()
+    {
+        Effects = new()
         {
             { "Germ Antibodies Awarded", 0.0f },
             { "Germ Damage Per Second", 0.0f },
@@ -31,57 +35,50 @@ public class EffectsManager : MonoBehaviour
             { "Tower Damage", 0.0f },
             { "Tower Range", 0.0f }
         };
-    }
 
-    // Start is called before the first frame update
-    void Start() => onEffectsChange.Invoke();
+        onEffectsChange.Invoke();
+    }
 
     public void OnAntibodiesChange(float effect)
     {
-        RemovePreviousEffect();
+        RemoveEffects(antibodyEffects);
 
-        effectsDict["Germ Antibodies Awarded"] += effect;
-        effectsDict["Germ Damage Per Second"] -= effect;
-        effectsDict["Germ Health"] -= effect;
-        effectsDict["Germ Spawn Rate"] -= effect;
-        effectsDict["Germ Speed"] += effect;
-        effectsDict["Tower Attack Rate"] += effect;
-        effectsDict["Tower Damage"] += effect;
-        effectsDict["Tower Range"] += effect;
+        antibodyEffects = new()
+        {
+            { "Germ Antibodies Awarded", effect },
+            { "Germ Damage Per Second", -effect },
+            { "Germ Health", -effect },
+            { "Germ Spawn Rate", -effect },
+            { "Germ Speed", effect },
+            { "Tower Attack Rate", effect },
+            { "Tower Damage", effect },
+            { "Tower Range", effect }
+        };
 
+        ApplyEffects(antibodyEffects);
         onEffectsChange.Invoke();
-        previousEffect = effect;
-    }
-
-    // Can potentially DRY out
-    private void RemovePreviousEffect()
-    {
-        effectsDict["Germ Antibodies Awarded"] -= previousEffect;
-        effectsDict["Germ Damage Per Second"] += previousEffect;
-        effectsDict["Germ Health"] += previousEffect;
-        effectsDict["Germ Spawn Rate"] += previousEffect;
-        effectsDict["Germ Speed"] -= previousEffect;
-        effectsDict["Tower Attack Rate"] -= previousEffect;
-        effectsDict["Tower Damage"] -= previousEffect;
-        effectsDict["Tower Range"] -= previousEffect;
     }
 
     public void OnEventConclusion(Dictionary<string, float> effectsDict)
     {
-        foreach (var key in effectsDict.Keys)
-            this.effectsDict[key] += effectsDict[key];
-
-        onEffectsChange.Invoke();
-        previousEffectsDict = effectsDict;
+        eventEffects = effectsDict;
+        ApplyEffects(eventEffects);
     }
 
-    public void OnNewEvent()
-    {
-        if (previousEffectsDict.Count == 0)
-            return;
+    public void OnNewEvent() => RemoveEffects(eventEffects);
 
-        foreach (var key in new List<string>(effectsDict.Keys))
-            effectsDict[key] -= previousEffectsDict[key];
+    private void ApplyEffects(Dictionary<string, float> effectsDict)
+    {
+        foreach (string key in effectsDict.Keys)
+            Effects[key] += effectsDict[key];
+
+        onEffectsChange.Invoke();
+    }
+
+    private void RemoveEffects(Dictionary<string, float> effectsDict)
+    {
+        foreach (string key in effectsDict.Keys)
+            Effects[key] -= effectsDict[key];
 
         onEffectsChange.Invoke();
     }

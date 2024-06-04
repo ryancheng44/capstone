@@ -83,10 +83,10 @@ public class Germ : MonoBehaviour
 
     private void OnEffectsChange()
     {
-        currentAntibodiesAwarded = (int)(antibodiesAwarded * (1.0f + EffectsManager.Instance.effectsDict["Germ Antibodies Awarded"]));
-        currentDamagePerSecond = damagePerSecond * (1.0f + EffectsManager.Instance.effectsDict["Germ Damage Per Second"]);
-        currentHealth = health * (1.0f + EffectsManager.Instance.effectsDict["Germ Health"]);
-        currentSpeed = speed * (1.0f + EffectsManager.Instance.effectsDict["Germ Speed"]);
+        currentAntibodiesAwarded = (int)(antibodiesAwarded * (1.0f + EffectsManager.Instance.Effects["Germ Antibodies Awarded"]));
+        currentDamagePerSecond = damagePerSecond * (1.0f + EffectsManager.Instance.Effects["Germ Damage Per Second"]);
+        currentHealth = health * (1.0f + EffectsManager.Instance.Effects["Germ Health"]);
+        currentSpeed = speed * (1.0f + EffectsManager.Instance.Effects["Germ Speed"]);
 
         TakeDamage(0.0f);
     }
