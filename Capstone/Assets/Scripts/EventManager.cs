@@ -23,6 +23,7 @@ public class EventManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI secondNumberText;
     [SerializeField] private TMP_InputField answerInputField;
 
+    [SerializeField] private GameObject resultPanel;
     [SerializeField] private TextMeshProUGUI resultText;
     [SerializeField] private TextMeshProUGUI germAntibodiesAwardedEffectText;
     [SerializeField] private TextMeshProUGUI germDamagePerSecondEffectText;
@@ -140,14 +141,14 @@ public class EventManager : MonoBehaviour
         EffectsManager.Instance.OnEventConclusion(effectsDict);
 
         problemPanel.SetActive(false);
-        resultText.gameObject.SetActive(true);
+        resultPanel.SetActive(true);
 
         Invoke(nameof(CloseEvent), 5.0f);
     }
 
     private void CloseEvent()
     {
-        resultText.gameObject.SetActive(false);
+        resultPanel.SetActive(false);
 
         answerInputField.text = string.Empty;
         problemPanel.SetActive(true);

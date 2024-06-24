@@ -75,7 +75,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1787070559
   m_SortingLayer: 4
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -1453549040, guid: a7450396b03c847b4bf13f744c866fe1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_FlipX: 0
@@ -522,14 +522,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <ProfilePic>k__BackingField: {fileID: -1453549040, guid: a7450396b03c847b4bf13f744c866fe1, type: 3}
+  <TowerName>k__BackingField: Macrophage
+  <Cost>k__BackingField: 350
   germsLayer:
     serializedVersion: 2
     m_Bits: 8
   projectilePrefab: {fileID: 5289313097835146024, guid: 0e561fd0886494a8b9c213ddb15dcc3a, type: 3}
-  <TowerName>k__BackingField: Macrophage
-  <Cost>k__BackingField: 350
   attackRate: 1
   damage: 10
   range: 2
-  <UpgradeCost>k__BackingField: 150
-  upgradeEffect: 0.5

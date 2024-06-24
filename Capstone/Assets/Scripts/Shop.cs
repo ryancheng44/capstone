@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(Animator))]
 public class Shop : MonoBehaviour
@@ -17,16 +18,17 @@ public class Shop : MonoBehaviour
     [SerializeField] private TMP_InputField yInputField;
     [SerializeField] private LayerMask offLimitsLayer;
 
-    [SerializeField] private Transform rangeIndicator;
     [SerializeField] private Transform towerCanvas;
     [SerializeField] private float towerCanvasOffset;
     [SerializeField] private TextMeshProUGUI towerNameText;
     [SerializeField] private TextMeshProUGUI towerSellValueText;
     [SerializeField] private TextMeshProUGUI towerUpgradeCostText;
+
+    [SerializeField] private Transform rangeIndicator;
     [SerializeField] private LayerMask towerLayer;
 
-    private Tower selectedTower = null;
     private Tower towerToPlace = null;
+    private Tower selectedTower = null;
 
     private Animator animator;
     private bool isHidden = false;
@@ -51,8 +53,9 @@ public class Shop : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T))
             Toggle();
 
-        if (Input.GetMouseButtonUp(0) && towerToPlace == null)
+        if (Input.GetMouseButtonUp(0) && towerToPlace == null && !EventSystem.current.IsPointerOverGameObject())
         {
+            Tower previousTower = selectedTower;
             DeselectTower();
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -60,13 +63,17 @@ public class Shop : MonoBehaviour
 
             if (hit.collider != null)
             {
-                selectedTower = hit.collider.GetComponent<Tower>();
-                selectedTower.GetComponent<SpriteRenderer>().color = Color.green;
-                ShowOptions();
-                ShowRangeIndicator(selectedTower);
+                Tower tower = hit.collider.GetComponent<Tower>();
+
+                if (tower != previousTower)
+                {
+                    selectedTower = tower;
+                    selectedTower.GetComponent<SpriteRenderer>().color = Color.green;
+
+                    ShowOptions();
+                    ShowRangeIndicator(selectedTower);
+                }
             }
-            
-            // TODO: Make clicking on UI not deselect the tower
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -74,6 +81,7 @@ public class Shop : MonoBehaviour
             if (towerToPlace != null)
             {
                 Destroy(towerToPlace.gameObject);
+                towerToPlace = null;
                 ClearTowerPlacementStuff();
             }
             else
@@ -84,58 +92,12 @@ public class Shop : MonoBehaviour
     private void OnEnable() => EffectsManager.Instance.onEffectsChange.AddListener(OnEffectsChange);
     private void OnDisable() => EffectsManager.Instance.onEffectsChange.RemoveListener(OnEffectsChange);
 
-    private void DeselectTower()
-    {
-        if (selectedTower == null)
-            return;
-
-        selectedTower.GetComponent<SpriteRenderer>().color = Color.white;
-        selectedTower = null;
-        HideRangeIndicator();
-        HideOptions();
-    }
-
     private void OnEffectsChange()
     {
-        if (towerToPlace != null || selectedTower != null)
-            ShowRangeIndicator(towerToPlace != null ? towerToPlace : selectedTower);
-    }
-
-    public void ShowOptions()
-    {
-        towerCanvas.SetParent(selectedTower.transform);
-        towerCanvas.localPosition = new Vector3(0f, towerCanvasOffset, 0f);
-
-        towerNameText.text = selectedTower.TowerName;
-        towerSellValueText.text = selectedTower.SellValue.ToString();
-        if (selectedTower.HasBeenUpgraded)
-            towerUpgradeCostText.text = "MAX";
-        else
-            towerUpgradeCostText.text = selectedTower.UpgradeCost.ToString();
-
-        towerCanvas.gameObject.SetActive(true);
-    }
-
-    public void HideOptions()
-    {
-        towerCanvas.SetParent(null);
-        towerCanvas.gameObject.SetActive(false);
-    }
-
-    public void UpgradeTower()
-    {
-        if (selectedTower.HasBeenUpgraded)
-            return;
-
-        selectedTower.Upgrade();
-    }
-
-    public void SellTower()
-    {
-        HideOptions();
-        HideRangeIndicator();
-        selectedTower.Sell();
-        DeselectTower();
+        if (towerToPlace != null)
+            ShowRangeIndicator(towerToPlace);
+        else if (selectedTower != null)
+            ShowRangeIndicator(selectedTower);
     }
 
     public void Toggle()
@@ -144,64 +106,13 @@ public class Shop : MonoBehaviour
         animator.SetBool("isHidden", isHidden);
     }
 
-    public void SpawnTower(Tower towerPrefab)
-    {
-        if (towerToPlace != null)
-        {
-            Destroy(towerToPlace.gameObject);
-            ClearTowerPlacementStuff();
-        }
-
-        towerToPlace = Instantiate(towerPrefab, Vector3.zero, Quaternion.identity);
-        towerPlacementPanel.SetActive(true);
-
-        ShowRangeIndicator(towerToPlace);
-    }
-
-    public void UpdateTowerPosition()
-    {
-        if (towerToPlace == null)
-            return;
-
-        if (float.TryParse(xInputField.text, out float x)) { }
-        else x = 0;
-
-        if (float.TryParse(yInputField.text, out float y)) { }
-        else y = 0;
-
-        towerToPlace.GetComponent<Rigidbody2D>().MovePosition(new Vector2(x, y));
-    }
-
-    public void PlaceTower()
-    {
-        if (towerToPlace.GetComponent<Collider2D>().IsTouchingLayers(offLimitsLayer))
-        {
-            Debug.Log("Can't place tower here");
-
-            // TODO: Show error message
-
-            return;
-        }
-
-        AntibodyManager.Instance.ChangeAntibodiesBy(-towerToPlace.Cost);
-
-        towerToPlace.enabled = true;
-        ClearTowerPlacementStuff();
-    }
-
-    private void ClearTowerPlacementStuff()
-    {
-        towerToPlace = null;
-
-        xInputField.text = string.Empty;
-        yInputField.text = string.Empty;
-        towerPlacementPanel.SetActive(false);
-
-        HideRangeIndicator();
-    }
-
     private void ShowRangeIndicator(Tower tower)
     {
+        // Understandably questionable
+        // Methods subscribed to a UnityEvent are called in the order they were added
+        // Therefore we have to intentionally call OnEffectsChange() before updating the range indicator
+        // Otherwise the range indicator will be updated before the tower's range is updated
+        // (Since towers are born after Shop, so they are added to the UnityEvent after Shop is added)
         tower.OnEffectsChange();
 
         Vector3 temp = rangeIndicator.localScale;
@@ -218,5 +129,94 @@ public class Shop : MonoBehaviour
     {
         rangeIndicator.SetParent(null);
         rangeIndicator.gameObject.SetActive(false);
+    }
+
+    private void ShowOptions()
+    {
+        towerCanvas.position = selectedTower.transform.position + Vector3.up * towerCanvasOffset;
+
+        towerNameText.text = selectedTower.TowerName;
+        towerSellValueText.text = selectedTower.SellValue.ToString();
+
+        towerCanvas.gameObject.SetActive(true);
+    }
+
+    private void HideOptions() => towerCanvas.gameObject.SetActive(false);
+
+    public void SpawnTower(Tower towerPrefab)
+    {
+        if (towerToPlace != null)
+        {
+            Destroy(towerToPlace.gameObject);
+            towerToPlace = null;
+        }
+
+        DeselectTower();
+
+        towerToPlace = Instantiate(towerPrefab, Vector3.zero, Quaternion.identity);
+        towerPlacementPanel.SetActive(true);
+
+        UpdateTowerPosition();
+        ShowRangeIndicator(towerToPlace);
+    }
+
+    public void UpdateTowerPosition()
+    {
+        if (towerToPlace == null)
+            return;
+
+        float x = float.TryParse(xInputField.text, out float parsedX) ? parsedX : 0;
+        float y = float.TryParse(yInputField.text, out float parsedY) ? parsedY : 0;
+
+        towerToPlace.GetComponent<Rigidbody2D>().MovePosition(new Vector2(x, y));
+    }
+
+    public void PlaceTower()
+    {
+        if (towerToPlace.GetComponent<Collider2D>().IsTouchingLayers(offLimitsLayer))
+        {
+            Debug.Log("Can't place tower here");
+            // TODO: Show error message
+            return;
+        }
+
+        AntibodyManager.Instance.ChangeAntibodiesBy(-towerToPlace.Cost);
+
+        towerToPlace.enabled = true;
+
+        towerToPlace = null;
+        ClearTowerPlacementStuff();
+    }
+
+    private void ClearTowerPlacementStuff()
+    {
+        xInputField.text = string.Empty;
+        yInputField.text = string.Empty;
+        towerPlacementPanel.SetActive(false);
+
+        HideRangeIndicator();
+    }
+
+    private void DeselectTower()
+    {
+        if (selectedTower == null)
+            return;
+
+        selectedTower.GetComponent<SpriteRenderer>().color = Color.white;
+        selectedTower = null;
+
+        HideOptions();
+        HideRangeIndicator();
+    }
+
+    public void SellTower()
+    {
+        AntibodyManager.Instance.ChangeAntibodiesBy(selectedTower.SellValue);
+
+        HideOptions();
+        HideRangeIndicator();
+
+        Destroy(selectedTower.gameObject, 0.1f);
+        selectedTower = null;
     }
 }

@@ -5,31 +5,34 @@ using UnityEngine;
 public class Tower : MonoBehaviour
 {
     [field: SerializeField] public Sprite ProfilePic { get; private set; }
+    [field: SerializeField] public string TowerName { get; private set; }
+    [field: SerializeField] public int Cost { get; private set; }
+
+    public float CurrentRange { get; private set; }
+
     [SerializeField] private LayerMask germsLayer;
     [SerializeField] private Projectile projectilePrefab;
-    [field: SerializeField] public string TowerName { get; private set; }
 
-    [field: SerializeField] public int Cost { get; private set; }
     [SerializeField] private float attackRate;
     [SerializeField] private float damage;
     [SerializeField] private float range;
 
-    [field: SerializeField] public int UpgradeCost { get; private set; }
-    [SerializeField] private float upgradeEffect;
-    public int SellValue { get; private set; }
-    public bool HasBeenUpgraded { get; private set; } = false;
-
     private float currentAttackRate;
     private float currentDamage;
-    public float CurrentRange { get; private set; }
+
+    public int SellValue => totalValue / 2;
+    private int totalValue = 0;
 
     private float timer = 0.0f;
 
     // Start is called before the first frame update
     void Start()
     {
-        GetComponent<SpriteRenderer>().color = Color.white;
-        SellValue = Cost / 2;
+        SpriteRenderer SR = GetComponent<SpriteRenderer>();
+        SR.color = Color.white;
+        SR.sortingOrder = 0;
+
+        totalValue = Cost;
     }
 
     // Update is called once per frame
@@ -44,13 +47,20 @@ public class Tower : MonoBehaviour
     private void OnEnable() => EffectsManager.Instance.onEffectsChange.AddListener(OnEffectsChange);
     private void OnDisable() => EffectsManager.Instance.onEffectsChange.RemoveListener(OnEffectsChange);
 
+    public void OnEffectsChange()
+    {
+        currentAttackRate = attackRate * (1.0f + EffectsManager.Instance.Effects["Tower Attack Rate"]);
+        currentDamage = damage * (1.0f + EffectsManager.Instance.Effects["Tower Damage"]);
+        CurrentRange = range * (1.0f + EffectsManager.Instance.Effects["Tower Range"]);
+    }
+
     private void TryAttack()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, CurrentRange, germsLayer);
 
         if (colliders.Length == 0)
             return;
-        
+
         Attack(colliders);
         timer = 1f / currentAttackRate;
     }
@@ -73,38 +83,5 @@ public class Tower : MonoBehaviour
 
         Projectile projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
         projectile.Init(furthestGerm, currentDamage);
-    }
-
-    public void OnEffectsChange()
-    {
-        currentAttackRate = attackRate * (1.0f + EffectsManager.Instance.Effects["Tower Attack Rate"]);
-        currentDamage = damage * (1.0f + EffectsManager.Instance.Effects["Tower Damage"]);
-        CurrentRange = range * (1.0f + EffectsManager.Instance.Effects["Tower Range"]);
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, CurrentRange);
-    }
-
-    public void Upgrade()
-    {
-        if (HasBeenUpgraded)
-            return;
-
-        AntibodyManager.Instance.ChangeAntibodiesBy(-UpgradeCost);
-        HasBeenUpgraded = true;
-        SellValue += UpgradeCost / 2;
-        attackRate *= 1 + upgradeEffect;
-        damage *= 1 + upgradeEffect;
-        range *= 1 + upgradeEffect;
-        OnEffectsChange();
-    }
-
-    public void Sell()
-    {
-        AntibodyManager.Instance.ChangeAntibodiesBy(SellValue);
-        Destroy(gameObject);
     }
 }

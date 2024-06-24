@@ -351,7 +351,7 @@ Canvas:
   m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
@@ -706,7 +706,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -150}
-  m_SizeDelta: {x: 1569.5, y: 217.5}
+  m_SizeDelta: {x: 1460, y: 205}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &362629459
 MonoBehaviour:
@@ -730,7 +730,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 1051021087, guid: 5be6ef4ebe28f4af888434f6434ecb98, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -835,8 +835,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -50, y: 0}
-  m_SizeDelta: {x: -100, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &451201099
 MonoBehaviour:
@@ -851,9 +851,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 25
+    m_Left: 0
     m_Right: 0
-    m_Top: 25
+    m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
   m_StartCorner: 0
@@ -911,7 +911,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -50, y: -50}
-  m_SizeDelta: {x: 1570, y: 120}
+  m_SizeDelta: {x: 1570, y: 110}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &453188413
 MonoBehaviour:
@@ -967,7 +967,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 4
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -1047,7 +1047,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 250, y: 150}
+  m_AnchoredPosition: {x: 255, y: 150}
   m_SizeDelta: {x: 230, y: 110}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &515253538
@@ -1119,7 +1119,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.88235295, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.88235295, b: 0.88235295, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1762,7 +1762,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -250, y: 150}
+  m_AnchoredPosition: {x: -255, y: 150}
   m_SizeDelta: {x: 315, y: 140}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &775434866
@@ -1917,7 +1917,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -50, y: 0}
-  m_SizeDelta: {x: 59, y: -100}
+  m_SizeDelta: {x: 50, y: -100}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &851325405
 MonoBehaviour:
@@ -2094,7 +2094,6 @@ GameObject:
   - component: {fileID: 1046175416}
   - component: {fileID: 1046175418}
   - component: {fileID: 1046175417}
-  - component: {fileID: 1046175419}
   m_Layer: 5
   m_Name: Guide Text
   m_TagString: Untagged
@@ -2118,8 +2117,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -50, y: 0}
-  m_SizeDelta: {x: -100, y: 2519.54}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 2519.54}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1046175417
 MonoBehaviour:
@@ -2141,27 +2140,28 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Operation Antibody is a tower defense game. Place towers (immune system
-    cells) to kill invading germs. Manage your health and antibody balance to survive
-    and thrive. Do math to boost your towers and weaken invaders.\n\nDO:\n- Monitor
-    your health and antibody balance at the top left of your screen.\n- Kill germs
-    to gain antibodies.\n- Purchase towers using antibodies from the shop on the
-    right side of your screen.\n- Place towers using Cartesian coordinates (can\u2019t
-    place on path or other towers).\n- Answer pop-up math problems correctly to strengthen
-    your defenses and weaken enemies. (Unlimited tries, but don\u2019t run out of
-    time!)\n\nAVOID:\n- Letting your health drop to 0 \u2192 GAME OVER!\n- Spending
-    more antibodies than you have \u2192 will weaken your defenses and strengthen
-    enemies\n- Letting time run out in math events \u2192 will also weaken your defenses
-    and strengthen enemies (unlimited tries and no incorrect penalty, so give everything
-    a shot!)\n\nACHIEVE:\n- Effective immune system defense.\n- Practice math skills.\n\nGameplay
-    Overview:\n\nHealth: Decreases each second a germ is in your body (on screen).
-    Health regenerates by 1 per second.\n\nAntibodies: Earned by killing germs. Used
-    to buy and upgrade towers. Avoid a negative balance to prevent stronger germs
-    and weaker towers.\n\nTowers (immune system cells): Purchased from the shop,
-    placed strategically, upgraded, or sold. Range indicated by a red line from the
-    tower\u2019s center.\n\nEvents: Math challenges with different problem types
-    per level. Correct answers weaken germs or strengthen towers. Time constraints
-    apply.\n\nStay vigilant, plan strategically, and keep your immune defenses strong!"
+  m_text: "Operation Antibody is an immune system themed tower defense game. Place
+    white blood cells (towers) to kill germs (invaders). Manage your health and antibody
+    balance to survive and thrive. Use math to strengthen your towers and weaken
+    invaders.\n\nDO:\n- Monitor your health and antibody balance at the top left
+    of your screen.\n- Kill germs to gain antibodies.\n- Purchase towers using antibodies
+    from the shop on the right side of your screen.\n- Place towers using Cartesian
+    coordinates.\n   - Can't place them on path or other towers.\n- Answer pop-up
+    math problems correctly to strengthen your towers and weaken germs.\n   - Unlimited
+    tries and no wrong penalty, but don't run out of time!\n\nDON'T:\n- Let your
+    health drop to 0 -> GAME OVER!\n- Spend more antibodies than you have -> will
+    weaken your towers and strengthen germs\n- Run out time in math problems -> will
+    weaken your towers and strengthen germs\n   - Unlimited tries and no wrong penalty,
+    so give everything a shot!\n\nGameplay Overview:\n\nCells: Purchased from the
+    shop. Placed using Cartesian coordinates. Can be upgraded or sold. Range indicated
+    by a red line from the center of the cell.\n\nGerms: Decrease your health every
+    second they are in your body (on screen). Different types of germs deal different
+    amounts of damage.\n\nHealth: Regenerates by 1 per second.\n\nAntibodies: Earned
+    by killing germs. Used to buy and upgrade cells. Avoid a negative balance to
+    prevent weakening your cells and strengthening germs.\n\nEvents: Pop-up math
+    problems. Unlimited tries and no wrong penalty. Time constraints apply. Correct
+    answers strengthen cells or weaken germs. Running out of time has the opposite
+    effects. Problem difficulty increases as you progress through the levels."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1ca6c657a68224c4dbc9adb8eced37ec, type: 2}
   m_sharedMaterial: {fileID: 3174439730220877651, guid: 1ca6c657a68224c4dbc9adb8eced37ec, type: 2}
@@ -2238,20 +2238,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1046175415}
   m_CullTransparentMesh: 1
---- !u!114 &1046175419
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1046175415}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_HorizontalFit: 0
-  m_VerticalFit: 2
 --- !u!1 &1207082211
 GameObject:
   m_ObjectHideFlags: 0
@@ -2847,8 +2833,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -425}
-  m_SizeDelta: {x: 1377, y: 213}
+  m_AnchoredPosition: {x: 0, y: -455}
+  m_SizeDelta: {x: 1285, y: 200}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1465465131
 MonoBehaviour:
@@ -2872,7 +2858,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: -762096813, guid: 5be6ef4ebe28f4af888434f6434ecb98, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -2925,8 +2911,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -100, y: -100}
+  m_AnchoredPosition: {x: -50, y: 0}
+  m_SizeDelta: {x: -200, y: -100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1597043635
 MonoBehaviour:
@@ -3044,7 +3030,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -50}
-  m_SizeDelta: {x: 535, y: 120}
+  m_SizeDelta: {x: 480, y: 110}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1709553579
 MonoBehaviour:
@@ -3093,14 +3079,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 100
-  m_fontSizeBase: 100
+  m_fontSize: 90
+  m_fontSizeBase: 90
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -3180,8 +3166,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -100, y: -100}
+  m_AnchoredPosition: {x: -50, y: 0}
+  m_SizeDelta: {x: -200, y: -100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1822800190
 CanvasRenderer:
@@ -3301,7 +3287,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -50, y: 0}
-  m_SizeDelta: {x: 59, y: -100}
+  m_SizeDelta: {x: 50, y: -100}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1873858107
 MonoBehaviour:
@@ -3647,7 +3633,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 150}
-  m_SizeDelta: {x: 315, y: 170}
+  m_SizeDelta: {x: 310, y: 170}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &2037344756
 MonoBehaviour:

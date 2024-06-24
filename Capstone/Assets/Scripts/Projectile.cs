@@ -38,7 +38,8 @@ public class Projectile : MonoBehaviour
 
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
 
-        transform.SetPositionAndRotation(transform.up * distanceThisFrame, Quaternion.Euler(new Vector3(0, 0, angle)));
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+        transform.position += transform.up * distanceThisFrame;
     }
 
     private void HitTarget()
@@ -46,7 +47,7 @@ public class Projectile : MonoBehaviour
         if (splash)
         {
             Collider2D[] colliders = Physics2D.OverlapCircleAll(target.position, splashRange, germsLayer);
-            
+
             foreach (Collider2D collider in colliders)
                 collider.GetComponent<Germ>().TakeDamage(damage);
         }

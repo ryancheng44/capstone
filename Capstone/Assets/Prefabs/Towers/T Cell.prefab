@@ -75,7 +75,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1787070559
   m_SortingLayer: 4
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -424456975, guid: e85e9c43f8d7145659ddc8b1d22cc877, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_FlipX: 0
@@ -162,14 +162,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <ProfilePic>k__BackingField: {fileID: -424456975, guid: e85e9c43f8d7145659ddc8b1d22cc877, type: 3}
+  <TowerName>k__BackingField: T Cell
+  <Cost>k__BackingField: 700
   germsLayer:
     serializedVersion: 2
     m_Bits: 8
   projectilePrefab: {fileID: 5289313097835146024, guid: bbd2bcb6dd1f34d5dbfed84879a811d4, type: 3}
-  <TowerName>k__BackingField: T Cell
-  <Cost>k__BackingField: 700
   attackRate: 0.75
   damage: 50
   range: 5
-  <UpgradeCost>k__BackingField: 325
-  upgradeEffect: 0.5
